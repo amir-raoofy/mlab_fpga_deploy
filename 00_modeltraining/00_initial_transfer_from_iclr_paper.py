@@ -14,6 +14,7 @@ class cfg:
     test_batchsize = 100
     val_batchsize = 256
     num_epochs = 500
+    lr=0.1 #10e-3
     weights = {
         "Agriculture":                                               67256 ,
 "Agro-forestryareas":					  15790 ,
@@ -114,6 +115,14 @@ num_cpus = multiprocessing.cpu_count()
 print("Number of cores: %s" %num_cpus)
 
 
+#
+# Create a callback for storing the model. This will be used for quantization later
+
+checkpoint = tf.keras.callbacks.ModelCheckpoint("best-model.ckpt",
+                              monitor="val_loss", mode="min",
+                              #monitor="val_acc", mode="max",
+                              save_best_only=True, verbose=1)
+
 
 # Load Model from Google
 hub_layer = hub.KerasLayer("https://tfhub.dev/google/remote_sensing/bigearthnet-resnet50/1", trainable=False)
@@ -128,7 +137,7 @@ model.add(tf.keras.layers.Dense(19, activation='sigmoid'))
 # Compile new model
 model.compile(
         loss='binary_crossentropy',
-        optimizer=tf.keras.optimizers.SGD(learning_rate=10e-3, momentum=0.9),
+        optimizer=tf.keras.optimizers.SGD(learning_rate=cfg.lr, momentum=0.9),
         metrics=[tf.keras.metrics.Precision(), tf.keras.metrics.Recall()] 
 )
 
@@ -139,7 +148,7 @@ history = model.fit(
         validation_steps=validation_generator.samples/validation_generator.batch_size,
         steps_per_epoch=train_generator.samples/train_generator.batch_size,
         validation_data=validation_generator,
-#       callbacks=[batchMetric],
+        callbacks=[checkpoint], #checkpoint = ModelCheckpoint(fname
         workers=num_cpus,
         class_weight=weights,
         verbose=1
