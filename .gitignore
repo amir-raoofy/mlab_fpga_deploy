@@ -1,1 +1,4 @@
 *~ # yes, I am using emacs
+.ipynb_checkpoints/
+best-model.ckpt/
+01_end_to_end_training_to_deployment/files/build/*
