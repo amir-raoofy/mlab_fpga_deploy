@@ -47,16 +47,17 @@ def datadownload():
     x_test = (x_test/255.0).astype(np.float32)
 
     # one-hot encode the labels
-    y_train = tf.keras.utils.to_categorical(y_train, num_classes=10)
-    y_test = tf.keras.utils.to_categorical(y_test, num_classes=10)
+    y_train = tf.keras.utils.to_categorical(y_train, num_classes=43)
+    y_test = tf.keras.utils.to_categorical(y_test, num_classes=43)
        
     # test dataset reduced to first 5000 images to simplify training & validation
     x_test = x_test[:5000]
     y_test = y_test[:5000]
 
     # reshape
-    x_train = x_train.reshape(x_train.shape[0],28,28,1)
-    x_test = x_test.reshape(x_test.shape[0],28,28,1)
+
+    x_train = x_train.reshape(x_train.shape[0],12,12,3)
+    x_test = x_test.reshape(x_test.shape[0],12,12,3)
    
         
     return (x_train,y_train), (x_test,y_test)

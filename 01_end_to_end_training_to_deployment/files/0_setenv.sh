@@ -56,8 +56,8 @@ export COMP_LOG_U50=compile_u50.log
 export COMP_LOG_ZCU102=compile_zcu102.log
 
 # training parameters
-export EPOCHS=10
-export LEARNRATE=0.0001
+export EPOCHS=1
+export LEARNRATE=0.1
 export BATCHSIZE=100
 
 # list of GPUs to use
@@ -67,12 +67,12 @@ export CUDA_VISIBLE_DEVICES="1"
 export TF_FORCE_GPU_ALLOW_GROWTH=true
 
 # network parameters
-export INPUT_HEIGHT=28
-export INPUT_WIDTH=28
-export INPUT_CHAN=1
+export INPUT_HEIGHT=12
+export INPUT_WIDTH=12
+export INPUT_CHAN=3
 export INPUT_SHAPE=?,${INPUT_HEIGHT},${INPUT_WIDTH},${INPUT_CHAN}
-export INPUT_NODE=images_in
-export OUTPUT_NODE=flatten/Reshape
+export INPUT_NODE='conv2d_input'
+export OUTPUT_NODE='dense_1/Softmax'
 export NET_NAME=customcnn
 
 

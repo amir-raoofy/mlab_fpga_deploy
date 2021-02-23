@@ -20,6 +20,15 @@
 
 # freeze graph
 run_freeze_graph() {
+  echo "
+    freeze_graph \
+    --input_graph      ${CHKPT_DIR}/${INFER_GRAPH_FILENAME} \
+    --input_checkpoint ${CHKPT_DIR}/${CHKPT_FILENAME} \
+    --input_binary     true \
+    --output_graph     ${FREEZE}/${FROZEN_GRAPH} \
+    --output_node_names ${OUTPUT_NODE}"
+
+
   freeze_graph \
     --input_graph      ${CHKPT_DIR}/${INFER_GRAPH_FILENAME} \
     --input_checkpoint ${CHKPT_DIR}/${CHKPT_FILENAME} \

@@ -20,6 +20,7 @@ Author: Mark Harvey
 
 import os
 import cv2
+import numpy as np
 
 
 calib_image_list = './build/quantize/images/calib_list.txt'
@@ -36,10 +37,19 @@ def calib_input(iter):
     image = cv2.imread(calib_image_name, cv2.IMREAD_GRAYSCALE)
 
     # reshape
-    image = image.reshape(28,28,1)
-    
+    image = image[:12,:12]
+
+    image2 = np.zeros((12,12,3))
+
+    image2[:,:,0] = image
+    image2[:,:,1] = image
+    image2[:,:,2] = image
+
+    image = image2
+
     # normalize
     image = image/255.0
 
     images.append(image)
-  return {"images_in": images}
+  return {"conv2d_input": images}
+  #return {"conv2d_input": images}
