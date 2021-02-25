@@ -25,6 +25,8 @@ import numpy as np
 
 calib_image_list = './build/quantize/images/calib_list.txt'
 calib_batch_size = 10
+SIZE=224
+
 
 def calib_input(iter):
   images = []
@@ -37,13 +39,13 @@ def calib_input(iter):
     image = cv2.imread(calib_image_name, cv2.IMREAD_GRAYSCALE)
 
     # reshape
-    image = image[:12,:12]
+    image = image[:SIZE,:SIZE]
 
-    image2 = np.zeros((12,12,3))
+    image2 = np.zeros((SIZE,SIZE,3))
 
-    image2[:,:,0] = image
-    image2[:,:,1] = image
-    image2[:,:,2] = image
+    image2[:28,:28,0] = image
+    image2[:28,:28,1] = image
+    image2[:28,:28,2] = image
 
     image = image2
 
@@ -51,5 +53,7 @@ def calib_input(iter):
     image = image/255.0
 
     images.append(image)
-  return {"conv2d_input": images}
+  return {"input_2": images}
+  #return {"input_1": images}
+  #return {"input_31": images}
   #return {"conv2d_input": images}

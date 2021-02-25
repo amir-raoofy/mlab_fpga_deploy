@@ -67,12 +67,12 @@ export CUDA_VISIBLE_DEVICES="1"
 export TF_FORCE_GPU_ALLOW_GROWTH=true
 
 # network parameters
-export INPUT_HEIGHT=12
-export INPUT_WIDTH=12
+export INPUT_HEIGHT=224
+export INPUT_WIDTH=224
 export INPUT_CHAN=3
 export INPUT_SHAPE=?,${INPUT_HEIGHT},${INPUT_WIDTH},${INPUT_CHAN}
-export INPUT_NODE='conv2d_input'
-export OUTPUT_NODE='dense_1/Softmax'
+export INPUT_NODE='input_2'
+export OUTPUT_NODE='dense/Sigmoid'
 export NET_NAME=customcnn
 
 
