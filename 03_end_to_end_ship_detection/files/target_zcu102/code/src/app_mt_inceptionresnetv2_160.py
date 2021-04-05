@@ -10,8 +10,8 @@ import threading
 import time
 import sys
 
-Verbose = True
-Debug = True
+Verbose = False
+Debug = False
 
 def CPUCalcSigmoid(data, size):
     output = []
@@ -92,16 +92,16 @@ def get_child_subgraph_cpu(graph: "Graph") -> List["Subgraph"]:
     ]
 
 
-def runUnetSubgraph(runner: "Runner", img, cnt, subgraph_id):
+def runUnetSubgraph(runner: "Runner", img, cnt, start, end, subgraph_id):
     """get tensor"""
     inputTensors = runner.get_input_tensors()
     outputTensors = runner.get_output_tensors()
     input_ndim = tuple(inputTensors[0].dims)
     output_ndim = tuple(outputTensors[0].dims)
 
-    n_of_images = len(img[0])
-    count = 0
-    while count < cnt:
+    n_of_images = end-start #len(img[0])
+    count = start
+    while count < end:
         runSize = input_ndim[0]
         """prepare batch input/output """
         inputData = [np.ones(tuple(inputTensors[k].dims), dtype=np.float32, order="C")
@@ -114,7 +114,7 @@ def runUnetSubgraph(runner: "Runner", img, cnt, subgraph_id):
             for j in range(runSize):
                 imageRun = inputData[k]
                 imageRun[j, ...] = img[k][(
-                    count + j) % n_of_images].reshape(tuple(inputTensors[k].dims)[1:])
+                    count + j) % cnt].reshape(tuple(inputTensors[k].dims)[1:])
 
         """run with batch """
         job_id = runner.execute_async(inputData, outputData)
@@ -123,7 +123,7 @@ def runUnetSubgraph(runner: "Runner", img, cnt, subgraph_id):
         for k in range(len(outputTensors)):
             for j in range(runSize):
                 output_imgs_dpu[subgraph_id][k][(count + j) %
-                                      n_of_images] = outputData[k][j]
+                                      cnt] = outputData[k][j]
 
         count = count + runSize
 
@@ -203,10 +203,11 @@ def main(argv):
             data_size = tuple(data_size)
             output_imgs_dpu[-1].append(np.zeros(data_size, dtype=np.float32))
 
-    for item in input_tensors_dpu:
-        print (item)
+    if (Debug==True):
+        for item in input_tensors_dpu:
+            print (item)
 
-    if (False):
+    if (Debug==True):
         for item in input_imgs_dpu:
             for jtem in item:
                 print(jtem.shape)
@@ -215,6 +216,24 @@ def main(argv):
             for jtem in item:
                 print(jtem.shape)
             print("\n")
+
+    start_list = []
+    end_list =[]
+    start = 0
+    for i in range(threadnum):
+        if (i==threadnum-1):
+            end = cnt
+        else:
+            end = start+(cnt//threadnum)
+
+        start_list.append(start)
+        end_list.append(end)
+
+        start=end
+
+    if (Debug==True):
+        print (start_list)
+        print (end_list)
 
     time_start = time.time()
     #######################################################
@@ -245,7 +264,7 @@ def main(argv):
     """run with batch """
     for i in range(int(threadnum)):
         t1 = threading.Thread(target=runUnetSubgraph, args=(
-            all_dpu_runners[i], inps, cnt, subgraph_id))
+            all_dpu_runners[i], inps, cnt, start_list[i], end_list[i], subgraph_id))
         threadAll.append(t1)
     for x in threadAll:
         x.start()
@@ -276,7 +295,7 @@ def main(argv):
 
     for i in range(int(threadnum)):
         t1 = threading.Thread(target=runUnetSubgraph, args=(
-            all_dpu_runners[i], inps, cnt, subgraph_id))
+            all_dpu_runners[i], inps, cnt, start_list[i], end_list[i], subgraph_id))
         threadAll.append(t1)
     for x in threadAll:
         x.start()
@@ -303,7 +322,7 @@ def main(argv):
 
     for i in range(int(threadnum)):
         t1 = threading.Thread(target=runUnetSubgraph, args=(
-            all_dpu_runners[i], inps, cnt, subgraph_id))
+            all_dpu_runners[i], inps, cnt, start_list[i], end_list[i], subgraph_id))
         threadAll.append(t1)
     for x in threadAll:
         x.start()
@@ -334,7 +353,7 @@ def main(argv):
 
     for i in range(int(threadnum)):
         t1 = threading.Thread(target=runUnetSubgraph, args=(
-            all_dpu_runners[i], inps, cnt, subgraph_id))
+            all_dpu_runners[i], inps, cnt, start_list[i], end_list[i], subgraph_id))
         threadAll.append(t1)
     for x in threadAll:
         x.start()
@@ -359,7 +378,7 @@ def main(argv):
 
     time_end = time.time()
     timetotal = time_end - time_start
-    total_frames = cnt * int(threadnum)
+    total_frames = cnt #* int(threadnum)
     fps = float(total_frames / timetotal)
     print(
         "FPS=%.2f, total frames = %.2f , time=%.6f seconds"
