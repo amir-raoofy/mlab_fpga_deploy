@@ -11,7 +11,7 @@ import time
 import sys
 
 Verbose = True
-Debug = False
+Debug = True
 
 def CPUCalcSigmoid(data, size):
     output = []
@@ -145,8 +145,8 @@ def main(argv):
         print("subgraphs_cpu: ", len(subgraphs_cpu))
         print("subgraphs_dpu: ", len(subgraphs_dpu))
         print("CPU subgraphs:")
-        for item in subgraphs_cpu:
-            print("CPU-node")
+        for id, item in enumerate (subgraphs_cpu):
+            print("CPU-node: ", id)
             print(item.get_name())
             print(item.get_input_tensors())
             print(item.get_output_tensors())
@@ -156,8 +156,8 @@ def main(argv):
                 print(tuple(jtem.dims))
 
         print("DPU subgraphs:")
-        for item in subgraphs_dpu:
-            print("DPU-node")
+        for id, item in enumerate (subgraphs_dpu):
+            print("DPU-node: ", id)
             print(item.get_name())
             print(item.get_input_tensors())
             print(item.get_output_tensors())
@@ -203,7 +203,10 @@ def main(argv):
             data_size = tuple(data_size)
             output_imgs_dpu[-1].append(np.zeros(data_size, dtype=np.float32))
 
-    if (Debug==True):
+    for item in input_tensors_dpu:
+        print (item)
+
+    if (False):
         for item in input_imgs_dpu:
             for jtem in item:
                 print(jtem.shape)
@@ -255,14 +258,10 @@ def main(argv):
     # CPU subgraph 1
     #######################################################
     input_imgs_dpu[1] = CPUZeroPad2d(output_imgs_dpu[0][0], cnt)
-    if (Debug==True):
-        for idx in range(64):
-            cv2.imwrite('./rpt/pred_1_'+str(idx)+'.jpg',
-                        scale_one_image(input_imgs_dpu[1][0][:, :, idx]))
     #######################################################
     # DPU subgraph 1
     #######################################################
-    inps = [input_imgs_dpu[1]]
+    inps = [input_imgs_dpu[1], output_imgs_dpu[0][0]]
 
     threadAll = []
     subgraph_id = 1
@@ -285,43 +284,7 @@ def main(argv):
     #######################################################
     # CPU subgraph 2
     #######################################################
-    input_imgs_dpu[2] = CPUZeroPad2d(output_imgs_dpu[1][2], cnt)
-    if (Debug==True):
-        for idx in range(256):
-            cv2.imwrite('./rpt/pred_2_'+str(idx)+'.jpg',
-                        scale_one_image(input_imgs_dpu[2][0][:, :, idx]))
-    #######################################################
-    # DPU subgraph 2
-    #######################################################
-    inps = [output_imgs_dpu[0][0], output_imgs_dpu[1][0],
-            output_imgs_dpu[1][1], output_imgs_dpu[1][2], input_imgs_dpu[2]]
-
-    threadAll = []
-    subgraph_id = 2
-    all_dpu_runners = []
-    for i in range(int(threadnum)):
-        all_dpu_runners.append(
-            vart.Runner.create_runner(subgraphs_dpu[subgraph_id], "run"))
-
-    for i in range(int(threadnum)):
-        t1 = threading.Thread(target=runUnetSubgraph, args=(
-            all_dpu_runners[i], inps, cnt, subgraph_id))
-        threadAll.append(t1)
-    for x in threadAll:
-        x.start()
-    for x in threadAll:
-        x.join()
-
-    del all_dpu_runners
-
-    if (Debug==True):
-        for idx in range(cnt):
-            cv2.imwrite('./rpt/pred_3_'+str(idx)+'.jpg',
-                        scale_one_image(output_imgs_dpu[2][0][idx][:, :, 0]))
-    #######################################################
-    # CPU subgraph 3
-    #######################################################
-    prediction = CPUCalcSigmoid(output_imgs_dpu[2][0], cnt)
+    prediction = CPUCalcSigmoid(output_imgs_dpu[1][0], cnt)
     if (Verbose==True):
         for idx in range(cnt):
             cv2.imwrite('./rpt/prediction_'+str(idx)+'.jpg',
