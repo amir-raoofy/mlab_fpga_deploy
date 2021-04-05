@@ -135,7 +135,7 @@ def main(argv):
     i = 0
     global runTotall
     runTotall = 128  # len(listimage)
-    cnt = 32
+    cnt = int(argv[3])
 
     g = xir.Graph.deserialize(argv[2])
     subgraphs_dpu = get_child_subgraph_dpu(g)
@@ -321,7 +321,8 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("usage : python3 script.py <thread_number> <xmodel_file>")
+    if len(sys.argv) != 4:
+        print("usage : python3 script.py <thread_number> <xmodel_file> <num_frames>")
+
     else:
         main(sys.argv)
