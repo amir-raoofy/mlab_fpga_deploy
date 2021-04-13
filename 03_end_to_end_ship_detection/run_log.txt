@@ -1,0 +1,723 @@
+1st run
+
+unet1_s 8 256
+FPS=41.22, total frames = 256.00 , time=6.210584 seconds
+IoU for model for the test dataset:  0.04333770082649179
+
+unet1_s 4 256
+FPS=33.62, total frames = 256.00 , time=7.615529 seconds
+IoU for model for the test dataset:  0.04333770082649179
+
+unet1_s 2 256
+FPS=33.16, total frames = 256.00 , time=7.719023 seconds
+IoU for model for the test dataset:  0.04333770082649179
+
+unet1_s 1 256
+FPS=19.17, total frames = 256.00 , time=13.350755 seconds
+IoU for model for the test dataset:  0.04333770082649179
+
+unet1_m 8 256
+FPS=24.17, total frames = 256.00 , time=10.593316 seconds
+IoU for model for the test dataset:  0.002004725047837566
+
+unet1_m 4 256
+FPS=19.75, total frames = 256.00 , time=12.963893 seconds
+IoU for model for the test dataset:  0.002004725047837566
+
+unet1_m 2 256
+FPS=19.17, total frames = 256.00 , time=13.356273 seconds
+IoU for model for the test dataset:  0.002004725047837566
+
+unet1_m 1 256
+FPS=10.47, total frames = 256.00 , time=24.453481 seconds
+IoU for model for the test dataset:  0.002004725047837566
+
+unet1_l 8 64
+FPS=8.17, total frames = 64.00 , time=7.834471 seconds
+IoU for model for the test dataset:  0.002317891793163073
+
+unet1_l 4 64
+FPS=6.82, total frames = 64.00 , time=9.383996 seconds
+IoU for model for the test dataset:  0.002317891793163073
+
+unet1_l 2 64
+FPS=6.72, total frames = 64.00 , time=9.521545 seconds
+IoU for model for the test dataset:  0.002317891793163073
+
+unet1_l 1 64
+FPS=3.60, total frames = 64.00 , time=17.790021 seconds
+IoU for model for the test dataset:  0.002317891793163073
+
+unet3_s 8 256
+FPS=37.70, total frames = 256.00 , time=6.790200 seconds
+IoU for model for the test dataset:  0.002042630033467957
+
+unet3_s 4 256
+FPS=39.55, total frames = 256.00 , time=6.473016 seconds
+IoU for model for the test dataset:  0.002042630033467957
+
+unet3_s 2 256
+FPS=37.77, total frames = 256.00 , time=6.777058 seconds
+IoU for model for the test dataset:  0.002042630033467957
+
+unet3_s 1 256
+FPS=21.36, total frames = 256.00 , time=11.987547 seconds
+IoU for model for the test dataset:  0.002042630033467957
+
+unet3_m 8 256
+FPS=25.77, total frames = 256.00 , time=9.935357 seconds
+IoU for model for the test dataset:  0.006570538357656933
+
+unet3_m 4 256
+FPS=15.59, total frames = 256.00 , time=16.416977 seconds
+IoU for model for the test dataset:  0.006570538357656933
+
+unet3_m 2 256
+FPS=15.55, total frames = 256.00 , time=16.464583 seconds
+IoU for model for the test dataset:  0.006570538357656933
+
+unet3_m 1 256
+FPS=11.54, total frames = 256.00 , time=22.186303 seconds
+IoU for model for the test dataset:  0.006570538357656933
+
+unet3_l 8 64
+FPS=9.10, total frames = 64.00 , time=7.029490 seconds
+IoU for model for the test dataset:  0.0022699891466501244
+
+unet3_l 4 64
+FPS=7.52, total frames = 64.00 , time=8.508079 seconds
+IoU for model for the test dataset:  0.0022699891466501244
+
+unet3_l 2 64
+FPS=6.83, total frames = 64.00 , time=9.365380 seconds
+IoU for model for the test dataset:  0.0022699891466501244
+
+unet3_l 1 64
+FPS=4.16, total frames = 64.00 , time=15.380065 seconds
+IoU for model for the test dataset:  0.0022699891466501244
+
+unet_mobilenetv2_s 8 256
+FPS=47.70, total frames = 256.00 , time=5.367429 seconds
+IoU for model for the test dataset:  0.10210642635861919
+
+unet_mobilenetv2_s 4 256
+FPS=41.32, total frames = 256.00 , time=6.195621 seconds
+IoU for model for the test dataset:  0.10210642635861919
+
+unet_mobilenetv2_s 2 256
+FPS=33.07, total frames = 256.00 , time=7.742064 seconds
+IoU for model for the test dataset:  0.10210642635861919
+
+unet_mobilenetv2_s 1 256
+FPS=20.89, total frames = 256.00 , time=12.255897 seconds
+IoU for model for the test dataset:  0.10210642635861919
+
+unet_mobilenetv2_m 8 256
+FPS=24.95, total frames = 256.00 , time=10.261167 seconds
+IoU for model for the test dataset:  0.09423563022752275
+
+unet_mobilenetv2_m 4 256
+FPS=27.00, total frames = 256.00 , time=9.482100 seconds
+IoU for model for the test dataset:  0.09423563022752275
+
+unet_mobilenetv2_m 2 256
+FPS=19.50, total frames = 256.00 , time=13.125892 seconds
+IoU for model for the test dataset:  0.09423563022752275
+
+unet_mobilenetv2_m 1 256
+FPS=11.89, total frames = 256.00 , time=21.535774 seconds
+IoU for model for the test dataset:  0.09423563022752275
+
+unet_mobilenetv2_l 8 64
+FPS=7.06, total frames = 64.00 , time=9.066375 seconds
+IoU for model for the test dataset:  1.7767683074504709e-07
+
+unet_mobilenetv2_l 4 64
+FPS=8.53, total frames = 64.00 , time=7.506341 seconds
+IoU for model for the test dataset:  1.7767683074504709e-07
+
+unet_mobilenetv2_l 2 64
+FPS=6.99, total frames = 64.00 , time=9.154283 seconds
+IoU for model for the test dataset:  1.7767683074504709e-07
+
+unet_mobilenetv2_l 1 64
+FPS=4.44, total frames = 64.00 , time=14.426803 seconds
+IoU for model for the test dataset:  1.7767683074504709e-07
+
+unet_resnet_s 8 256
+FPS=36.34, total frames = 256.00 , time=7.044359 seconds
+IoU for model for the test dataset:  0.10471278631378489
+
+unet_resnet_s 4 256
+FPS=41.41, total frames = 256.00 , time=6.182545 seconds
+IoU for model for the test dataset:  0.10471278631378489
+
+unet_resnet_s 2 256
+FPS=31.42, total frames = 256.00 , time=8.147894 seconds
+IoU for model for the test dataset:  0.10471278631378489
+
+unet_resnet_s 1 256
+FPS=19.64, total frames = 256.00 , time=13.033849 seconds
+IoU for model for the test dataset:  0.10471278631378489
+
+unet_resnet_m 8 256
+FPS=23.42, total frames = 256.00 , time=10.932031 seconds
+IoU for model for the test dataset:  0.0007466262020969904
+
+unet_resnet_m 4 256
+FPS=23.21, total frames = 256.00 , time=11.031687 seconds
+IoU for model for the test dataset:  0.0007466262020969904
+
+unet_resnet_m 2 256
+FPS=16.47, total frames = 256.00 , time=15.544447 seconds
+IoU for model for the test dataset:  0.0007466262020969904
+
+unet_resnet_m 1 256
+FPS=10.53, total frames = 256.00 , time=24.321571 seconds
+IoU for model for the test dataset:  0.0007466262020969904
+
+unet_resnet_l 8 64
+FPS=6.83, total frames = 64.00 , time=9.374673 seconds
+IoU for model for the test dataset:  0.040128210635565466
+
+unet_resnet_l 4 64
+FPS=8.19, total frames = 64.00 , time=7.813819 seconds
+IoU for model for the test dataset:  0.040128210635565466
+
+unet_resnet_l 2 64
+FPS=6.87, total frames = 64.00 , time=9.319366 seconds
+IoU for model for the test dataset:  0.040128210635565466
+
+unet_resnet_l 1 64
+FPS=4.25, total frames = 64.00 , time=15.059040 seconds
+IoU for model for the test dataset:  0.040128210635565466
+
+unet_inceptionresnetv2_s 8 256
+FPS=41.48, total frames = 256.00 , time=6.172389 seconds
+IoU for model for the test dataset:  0.0025793360482569824
+
+unet_inceptionresnetv2_s 4 256
+FPS=43.04, total frames = 256.00 , time=5.947710 seconds
+IoU for model for the test dataset:  0.0025793360482569824
+
+unet_inceptionresnetv2_s 2 256
+FPS=30.97, total frames = 256.00 , time=8.265111 seconds
+IoU for model for the test dataset:  0.0025793360482569824
+
+unet_inceptionresnetv2_s 1 256
+FPS=19.56, total frames = 256.00 , time=13.091222 seconds
+IoU for model for the test dataset:  0.0025793360482569824
+
+unet_inceptionresnetv2_m 8 256
+FPS=30.70, total frames = 256.00 , time=8.339366 seconds
+IoU for model for the test dataset:  0.08901052901949544
+
+unet_inceptionresnetv2_m 4 256
+FPS=31.08, total frames = 256.00 , time=8.235622 seconds
+IoU for model for the test dataset:  0.08901052901949544
+
+unet_inceptionresnetv2_m 2 256
+FPS=22.03, total frames = 256.00 , time=11.620268 seconds
+IoU for model for the test dataset:  0.08901052901949544
+
+unet_inceptionresnetv2_m 1 256
+FPS=14.57, total frames = 256.00 , time=17.569854 seconds
+IoU for model for the test dataset:  0.08901052901949544
+
+unet_inceptionresnetv2_l 8 64
+FPS=6.20, total frames = 64.00 , time=10.317998 seconds
+IoU for model for the test dataset:  0.02297217745528752
+
+unet_inceptionresnetv2_l 4 64
+FPS=8.13, total frames = 64.00 , time=7.875004 seconds
+IoU for model for the test dataset:  0.02297217745528752
+
+unet_inceptionresnetv2_l 2 64
+FPS=6.17, total frames = 64.00 , time=10.371258 seconds
+IoU for model for the test dataset:  0.02297217745528752
+
+unet_inceptionresnetv2_l 1 64
+FPS=3.34, total frames = 64.00 , time=19.190181 seconds
+IoU for model for the test dataset:  0.02297217745528752
+2nd run
+
+unet1_s 8 256
+FPS=35.99, total frames = 256.00 , time=7.112113 seconds
+IoU for model for the test dataset:  0.04333770082649179
+
+unet1_s 4 256
+FPS=35.15, total frames = 256.00 , time=7.283034 seconds
+IoU for model for the test dataset:  0.04333770082649179
+
+unet1_s 2 256
+FPS=34.10, total frames = 256.00 , time=7.506690 seconds
+IoU for model for the test dataset:  0.04333770082649179
+
+unet1_s 1 256
+FPS=19.18, total frames = 256.00 , time=13.343825 seconds
+IoU for model for the test dataset:  0.04333770082649179
+
+unet1_m 8 256
+FPS=24.04, total frames = 256.00 , time=10.647467 seconds
+IoU for model for the test dataset:  0.002004725047837566
+
+unet1_m 4 256
+FPS=19.72, total frames = 256.00 , time=12.981226 seconds
+IoU for model for the test dataset:  0.002004725047837566
+
+unet1_m 2 256
+FPS=19.12, total frames = 256.00 , time=13.385664 seconds
+IoU for model for the test dataset:  0.002004725047837566
+
+unet1_m 1 256
+FPS=10.41, total frames = 256.00 , time=24.592365 seconds
+IoU for model for the test dataset:  0.002004725047837566
+
+unet1_l 8 64
+FPS=8.21, total frames = 64.00 , time=7.796934 seconds
+IoU for model for the test dataset:  0.002317891793163073
+
+unet1_l 4 64
+FPS=6.32, total frames = 64.00 , time=10.122158 seconds
+IoU for model for the test dataset:  0.002317891793163073
+
+unet1_l 2 64
+FPS=6.73, total frames = 64.00 , time=9.513910 seconds
+IoU for model for the test dataset:  0.002317891793163073
+
+unet1_l 1 64
+FPS=3.71, total frames = 64.00 , time=17.261457 seconds
+IoU for model for the test dataset:  0.002317891793163073
+
+unet3_s 8 256
+FPS=45.80, total frames = 256.00 , time=5.589302 seconds
+IoU for model for the test dataset:  0.002042630033467957
+
+unet3_s 4 256
+FPS=39.34, total frames = 256.00 , time=6.507027 seconds
+IoU for model for the test dataset:  0.002042630033467957
+
+unet3_s 2 256
+FPS=34.63, total frames = 256.00 , time=7.392462 seconds
+IoU for model for the test dataset:  0.002042630033467957
+
+unet3_s 1 256
+FPS=21.40, total frames = 256.00 , time=11.959884 seconds
+IoU for model for the test dataset:  0.002042630033467957
+
+unet3_m 8 256
+FPS=25.61, total frames = 256.00 , time=9.994799 seconds
+IoU for model for the test dataset:  0.006570538357656933
+
+unet3_m 4 256
+FPS=21.46, total frames = 256.00 , time=11.930877 seconds
+IoU for model for the test dataset:  0.006570538357656933
+
+unet3_m 2 256
+FPS=20.73, total frames = 256.00 , time=12.347707 seconds
+IoU for model for the test dataset:  0.006570538357656933
+
+unet3_m 1 256
+FPS=11.48, total frames = 256.00 , time=22.293557 seconds
+IoU for model for the test dataset:  0.006570538357656933
+
+unet3_l 8 64
+FPS=9.09, total frames = 64.00 , time=7.039869 seconds
+IoU for model for the test dataset:  0.0022699891466501244
+
+unet3_l 4 64
+FPS=7.42, total frames = 64.00 , time=8.625750 seconds
+IoU for model for the test dataset:  0.0022699891466501244
+
+unet3_l 2 64
+FPS=7.51, total frames = 64.00 , time=8.523473 seconds
+IoU for model for the test dataset:  0.0022699891466501244
+
+unet3_l 1 64
+FPS=4.16, total frames = 64.00 , time=15.382885 seconds
+IoU for model for the test dataset:  0.0022699891466501244
+
+unet_mobilenetv2_s 8 256
+FPS=36.93, total frames = 256.00 , time=6.931573 seconds
+IoU for model for the test dataset:  0.10210642635861919
+
+unet_mobilenetv2_s 4 256
+FPS=15.00, total frames = 256.00 , time=17.066185 seconds
+IoU for model for the test dataset:  0.10210642635861919
+
+unet_mobilenetv2_s 2 256
+FPS=33.35, total frames = 256.00 , time=7.675073 seconds
+IoU for model for the test dataset:  0.10210642635861919
+
+unet_mobilenetv2_s 1 256
+FPS=20.90, total frames = 256.00 , time=12.248332 seconds
+IoU for model for the test dataset:  0.10210642635861919
+
+unet_mobilenetv2_m 8 256
+FPS=27.23, total frames = 256.00 , time=9.400177 seconds
+IoU for model for the test dataset:  0.09423563022752275
+
+unet_mobilenetv2_m 4 256
+FPS=27.45, total frames = 256.00 , time=9.325774 seconds
+IoU for model for the test dataset:  0.09423563022752275
+
+unet_mobilenetv2_m 2 256
+FPS=19.67, total frames = 256.00 , time=13.016672 seconds
+IoU for model for the test dataset:  0.09423563022752275
+
+unet_mobilenetv2_m 1 256
+FPS=12.00, total frames = 256.00 , time=21.332272 seconds
+IoU for model for the test dataset:  0.09423563022752275
+
+unet_mobilenetv2_l 8 64
+FPS=7.40, total frames = 64.00 , time=8.648376 seconds
+IoU for model for the test dataset:  1.7767683074504709e-07
+
+unet_mobilenetv2_l 4 64
+FPS=8.74, total frames = 64.00 , time=7.324042 seconds
+IoU for model for the test dataset:  1.7767683074504709e-07
+
+unet_mobilenetv2_l 2 64
+FPS=6.00, total frames = 64.00 , time=10.672856 seconds
+IoU for model for the test dataset:  1.7767683074504709e-07
+
+unet_mobilenetv2_l 1 64
+FPS=4.40, total frames = 64.00 , time=14.539320 seconds
+IoU for model for the test dataset:  1.7767683074504709e-07
+
+unet_resnet_s 8 256
+FPS=36.44, total frames = 256.00 , time=7.024474 seconds
+IoU for model for the test dataset:  0.10471278631378489
+
+unet_resnet_s 4 256
+FPS=41.71, total frames = 256.00 , time=6.138189 seconds
+IoU for model for the test dataset:  0.10471278631378489
+
+unet_resnet_s 2 256
+FPS=31.61, total frames = 256.00 , time=8.099767 seconds
+IoU for model for the test dataset:  0.10471278631378489
+
+unet_resnet_s 1 256
+FPS=16.55, total frames = 256.00 , time=15.464883 seconds
+IoU for model for the test dataset:  0.10471278631378489
+
+unet_resnet_m 8 256
+FPS=23.09, total frames = 256.00 , time=11.086045 seconds
+IoU for model for the test dataset:  0.0007466262020969904
+
+unet_resnet_m 4 256
+FPS=23.05, total frames = 256.00 , time=11.106289 seconds
+IoU for model for the test dataset:  0.0007466262020969904
+
+unet_resnet_m 2 256
+FPS=15.59, total frames = 256.00 , time=16.420751 seconds
+IoU for model for the test dataset:  0.0007466262020969904
+
+unet_resnet_m 1 256
+FPS=8.36, total frames = 256.00 , time=30.635171 seconds
+IoU for model for the test dataset:  0.0007466262020969904
+
+unet_resnet_l 8 64
+FPS=7.23, total frames = 64.00 , time=8.856896 seconds
+IoU for model for the test dataset:  0.040128210635565466
+
+unet_resnet_l 4 64
+FPS=8.65, total frames = 64.00 , time=7.396922 seconds
+IoU for model for the test dataset:  0.040128210635565466
+
+unet_resnet_l 2 64
+FPS=6.90, total frames = 64.00 , time=9.281985 seconds
+IoU for model for the test dataset:  0.040128210635565466
+
+unet_resnet_l 1 64
+FPS=4.26, total frames = 64.00 , time=15.016727 seconds
+IoU for model for the test dataset:  0.040128210635565466
+
+unet_inceptionresnetv2_s 8 256
+FPS=41.32, total frames = 256.00 , time=6.196056 seconds
+IoU for model for the test dataset:  0.0025793360482569824
+
+unet_inceptionresnetv2_s 4 256
+FPS=41.93, total frames = 256.00 , time=6.105484 seconds
+IoU for model for the test dataset:  0.0025793360482569824
+
+unet_inceptionresnetv2_s 2 256
+FPS=31.59, total frames = 256.00 , time=8.103680 seconds
+IoU for model for the test dataset:  0.0025793360482569824
+
+unet_inceptionresnetv2_s 1 256
+FPS=19.49, total frames = 256.00 , time=13.132697 seconds
+IoU for model for the test dataset:  0.0025793360482569824
+
+unet_inceptionresnetv2_m 8 256
+FPS=29.83, total frames = 256.00 , time=8.582240 seconds
+IoU for model for the test dataset:  0.08901052901949544
+
+unet_inceptionresnetv2_m 4 256
+FPS=30.43, total frames = 256.00 , time=8.413265 seconds
+IoU for model for the test dataset:  0.08901052901949544
+
+unet_inceptionresnetv2_m 2 256
+FPS=22.55, total frames = 256.00 , time=11.351309 seconds
+IoU for model for the test dataset:  0.08901052901949544
+
+unet_inceptionresnetv2_m 1 256
+FPS=14.56, total frames = 256.00 , time=17.586616 seconds
+IoU for model for the test dataset:  0.08901052901949544
+
+unet_inceptionresnetv2_l 8 64
+FPS=6.35, total frames = 64.00 , time=10.086223 seconds
+IoU for model for the test dataset:  0.02297217745528752
+
+unet_inceptionresnetv2_l 4 64
+FPS=8.23, total frames = 64.00 , time=7.778010 seconds
+IoU for model for the test dataset:  0.02297217745528752
+
+unet_inceptionresnetv2_l 2 64
+FPS=6.18, total frames = 64.00 , time=10.362034 seconds
+IoU for model for the test dataset:  0.02297217745528752
+
+unet_inceptionresnetv2_l 1 64
+FPS=3.85, total frames = 64.00 , time=16.606189 seconds
+IoU for model for the test dataset:  0.02297217745528752
+3rd run
+
+unet1_s 8 256
+FPS=37.37, total frames = 256.00 , time=6.850167 seconds
+IoU for model for the test dataset:  0.04333770082649179
+
+unet1_s 4 256
+FPS=35.06, total frames = 256.00 , time=7.301362 seconds
+IoU for model for the test dataset:  0.04333770082649179
+
+unet1_s 2 256
+FPS=31.23, total frames = 256.00 , time=8.197748 seconds
+IoU for model for the test dataset:  0.04333770082649179
+
+unet1_s 1 256
+FPS=19.17, total frames = 256.00 , time=13.356024 seconds
+IoU for model for the test dataset:  0.04333770082649179
+
+unet1_m 8 256
+FPS=23.98, total frames = 256.00 , time=10.675263 seconds
+IoU for model for the test dataset:  0.002004725047837566
+
+unet1_m 4 256
+FPS=16.77, total frames = 256.00 , time=15.265339 seconds
+IoU for model for the test dataset:  0.002004725047837566
+
+unet1_m 2 256
+FPS=19.16, total frames = 256.00 , time=13.358003 seconds
+IoU for model for the test dataset:  0.002004725047837566
+
+unet1_m 1 256
+FPS=10.47, total frames = 256.00 , time=24.458707 seconds
+IoU for model for the test dataset:  0.002004725047837566
+
+unet1_l 8 64
+FPS=8.19, total frames = 64.00 , time=7.816911 seconds
+IoU for model for the test dataset:  0.002317891793163073
+
+unet1_l 4 64
+FPS=6.80, total frames = 64.00 , time=9.411952 seconds
+IoU for model for the test dataset:  0.002317891793163073
+
+unet1_l 2 64
+FPS=6.72, total frames = 64.00 , time=9.520976 seconds
+IoU for model for the test dataset:  0.002317891793163073
+
+unet1_l 1 64
+FPS=3.57, total frames = 64.00 , time=17.930831 seconds
+IoU for model for the test dataset:  0.002317891793163073
+
+unet3_s 8 256
+FPS=36.05, total frames = 256.00 , time=7.101495 seconds
+IoU for model for the test dataset:  0.002042630033467957
+
+unet3_s 4 256
+FPS=31.72, total frames = 256.00 , time=8.070388 seconds
+IoU for model for the test dataset:  0.002042630033467957
+
+unet3_s 2 256
+FPS=35.66, total frames = 256.00 , time=7.178431 seconds
+IoU for model for the test dataset:  0.002042630033467957
+
+unet3_s 1 256
+FPS=19.19, total frames = 256.00 , time=13.340517 seconds
+IoU for model for the test dataset:  0.002042630033467957
+
+unet3_m 8 256
+FPS=22.46, total frames = 256.00 , time=11.396182 seconds
+IoU for model for the test dataset:  0.006570538357656933
+
+unet3_m 4 256
+FPS=21.38, total frames = 256.00 , time=11.971142 seconds
+IoU for model for the test dataset:  0.006570538357656933
+
+unet3_m 2 256
+FPS=20.49, total frames = 256.00 , time=12.496580 seconds
+IoU for model for the test dataset:  0.006570538357656933
+
+unet3_m 1 256
+FPS=11.54, total frames = 256.00 , time=22.177967 seconds
+IoU for model for the test dataset:  0.006570538357656933
+
+unet3_l 8 64
+FPS=7.40, total frames = 64.00 , time=8.651817 seconds
+IoU for model for the test dataset:  0.0022699891466501244
+
+unet3_l 4 64
+FPS=7.63, total frames = 64.00 , time=8.385917 seconds
+IoU for model for the test dataset:  0.0022699891466501244
+
+unet3_l 2 64
+FPS=7.50, total frames = 64.00 , time=8.532564 seconds
+IoU for model for the test dataset:  0.0022699891466501244
+
+unet3_l 1 64
+FPS=4.08, total frames = 64.00 , time=15.672583 seconds
+IoU for model for the test dataset:  0.0022699891466501244
+
+unet_mobilenetv2_s 8 256
+FPS=47.39, total frames = 256.00 , time=5.401674 seconds
+IoU for model for the test dataset:  0.10210642635861919
+
+unet_mobilenetv2_s 4 256
+FPS=47.14, total frames = 256.00 , time=5.431165 seconds
+IoU for model for the test dataset:  0.10210642635861919
+
+unet_mobilenetv2_s 2 256
+FPS=33.55, total frames = 256.00 , time=7.630837 seconds
+IoU for model for the test dataset:  0.10210642635861919
+
+unet_mobilenetv2_s 1 256
+FPS=20.62, total frames = 256.00 , time=12.412269 seconds
+IoU for model for the test dataset:  0.10210642635861919
+
+unet_mobilenetv2_m 8 256
+FPS=15.76, total frames = 256.00 , time=16.245462 seconds
+IoU for model for the test dataset:  0.09423563022752275
+
+unet_mobilenetv2_m 4 256
+FPS=16.38, total frames = 256.00 , time=15.630228 seconds
+IoU for model for the test dataset:  0.09423563022752275
+
+unet_mobilenetv2_m 2 256
+FPS=18.80, total frames = 256.00 , time=13.618802 seconds
+IoU for model for the test dataset:  0.09423563022752275
+
+unet_mobilenetv2_m 1 256
+FPS=11.89, total frames = 256.00 , time=21.536607 seconds
+IoU for model for the test dataset:  0.09423563022752275
+
+unet_mobilenetv2_l 8 64
+FPS=9.48, total frames = 64.00 , time=6.749324 seconds
+IoU for model for the test dataset:  1.7767683074504709e-07
+
+unet_mobilenetv2_l 4 64
+FPS=9.91, total frames = 64.00 , time=6.457989 seconds
+IoU for model for the test dataset:  1.7767683074504709e-07
+
+unet_mobilenetv2_l 2 64
+FPS=7.25, total frames = 64.00 , time=8.830374 seconds
+IoU for model for the test dataset:  1.7767683074504709e-07
+
+unet_mobilenetv2_l 1 64
+FPS=4.44, total frames = 64.00 , time=14.404547 seconds
+IoU for model for the test dataset:  1.7767683074504709e-07
+
+unet_resnet_s 8 256
+FPS=41.49, total frames = 256.00 , time=6.170786 seconds
+IoU for model for the test dataset:  0.10471278631378489
+
+unet_resnet_s 4 256
+FPS=42.86, total frames = 256.00 , time=5.972301 seconds
+IoU for model for the test dataset:  0.10471278631378489
+
+unet_resnet_s 2 256
+FPS=31.87, total frames = 256.00 , time=8.032099 seconds
+IoU for model for the test dataset:  0.10471278631378489
+
+unet_resnet_s 1 256
+FPS=19.41, total frames = 256.00 , time=13.187025 seconds
+IoU for model for the test dataset:  0.10471278631378489
+
+unet_resnet_m 8 256
+FPS=23.67, total frames = 256.00 , time=10.814464 seconds
+IoU for model for the test dataset:  0.0007466262020969904
+
+unet_resnet_m 4 256
+FPS=23.56, total frames = 256.00 , time=10.867172 seconds
+IoU for model for the test dataset:  0.0007466262020969904
+
+unet_resnet_m 2 256
+FPS=16.51, total frames = 256.00 , time=15.501325 seconds
+IoU for model for the test dataset:  0.0007466262020969904
+
+unet_resnet_m 1 256
+FPS=10.25, total frames = 256.00 , time=24.966796 seconds
+IoU for model for the test dataset:  0.0007466262020969904
+
+unet_resnet_l 8 64
+FPS=7.85, total frames = 64.00 , time=8.148528 seconds
+IoU for model for the test dataset:  0.040128210635565466
+
+unet_resnet_l 4 64
+FPS=8.94, total frames = 64.00 , time=7.156390 seconds
+IoU for model for the test dataset:  0.040128210635565466
+
+unet_resnet_l 2 64
+FPS=6.88, total frames = 64.00 , time=9.300232 seconds
+IoU for model for the test dataset:  0.040128210635565466
+
+unet_resnet_l 1 64
+FPS=4.25, total frames = 64.00 , time=15.066222 seconds
+IoU for model for the test dataset:  0.040128210635565466
+
+unet_inceptionresnetv2_s 8 256
+FPS=42.89, total frames = 256.00 , time=5.969442 seconds
+IoU for model for the test dataset:  0.0025793360482569824
+
+unet_inceptionresnetv2_s 4 256
+FPS=42.15, total frames = 256.00 , time=6.074225 seconds
+IoU for model for the test dataset:  0.0025793360482569824
+
+unet_inceptionresnetv2_s 2 256
+FPS=31.62, total frames = 256.00 , time=8.097260 seconds
+IoU for model for the test dataset:  0.0025793360482569824
+
+unet_inceptionresnetv2_s 1 256
+FPS=19.50, total frames = 256.00 , time=13.126347 seconds
+IoU for model for the test dataset:  0.0025793360482569824
+
+unet_inceptionresnetv2_m 8 256
+FPS=30.82, total frames = 256.00 , time=8.305615 seconds
+IoU for model for the test dataset:  0.08901052901949544
+
+unet_inceptionresnetv2_m 4 256
+FPS=30.21, total frames = 256.00 , time=8.472890 seconds
+IoU for model for the test dataset:  0.08901052901949544
+
+unet_inceptionresnetv2_m 2 256
+FPS=21.92, total frames = 256.00 , time=11.680476 seconds
+IoU for model for the test dataset:  0.08901052901949544
+
+unet_inceptionresnetv2_m 1 256
+FPS=14.53, total frames = 256.00 , time=17.620701 seconds
+IoU for model for the test dataset:  0.08901052901949544
+
+unet_inceptionresnetv2_l 8 64
+FPS=6.79, total frames = 64.00 , time=9.425575 seconds
+IoU for model for the test dataset:  0.02297217745528752
+
+unet_inceptionresnetv2_l 4 64
+FPS=8.24, total frames = 64.00 , time=7.762832 seconds
+IoU for model for the test dataset:  0.02297217745528752
+
+unet_inceptionresnetv2_l 2 64
+FPS=5.43, total frames = 64.00 , time=11.785429 seconds
+IoU for model for the test dataset:  0.02297217745528752
+
+unet_inceptionresnetv2_l 1 64
+FPS=3.87, total frames = 64.00 , time=16.530731 seconds
+IoU for model for the test dataset:  0.02297217745528752
