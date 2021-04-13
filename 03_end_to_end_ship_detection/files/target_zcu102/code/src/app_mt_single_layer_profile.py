@@ -9,6 +9,7 @@ import math
 import threading
 import time
 import sys
+from vaitrace_py import vai_tracepoint
 
 import eval_utils as eu
 import csv
@@ -134,6 +135,7 @@ def runUnetSubgraph(runner: "Runner", img, cnt, start, end, subgraph_id):
 
         count = count + runSize
 
+@vai_tracepoint
 def main(argv):
     global threadnum
 
@@ -290,74 +292,7 @@ def main(argv):
     #######################################################
     # CPU subgraph 1
     #######################################################
-    input_imgs_dpu[1] = CPUZeroPad2d(output_imgs_dpu[0][0], cnt)
-    if (Debug==True):
-        for idx in range(64):
-            cv2.imwrite('./rpt/pred_1_'+str(idx)+'.jpg',
-                        scale_one_image(input_imgs_dpu[1][0][:, :, idx]))
-    #######################################################
-    # DPU subgraph 1
-    #######################################################
-    inps = [input_imgs_dpu[1]]
-
-    threadAll = []
-    subgraph_id = 1
-    all_dpu_runners = []
-    for i in range(int(threadnum)):
-        all_dpu_runners.append(
-            vart.Runner.create_runner(subgraphs_dpu[subgraph_id], "run"))
-
-    for i in range(int(threadnum)):
-        t1 = threading.Thread(target=runUnetSubgraph, args=(
-            all_dpu_runners[i], inps, cnt, start_list[i], end_list[i], subgraph_id))
-        threadAll.append(t1)
-    for x in threadAll:
-        x.start()
-    for x in threadAll:
-        x.join()
-
-    del all_dpu_runners
-
-    #######################################################
-    # CPU subgraph 2
-    #######################################################
-    input_imgs_dpu[2] = CPUZeroPad2d(output_imgs_dpu[1][2], cnt)
-    if (Debug==True):
-        for idx in range(256):
-            cv2.imwrite('./rpt/pred_2_'+str(idx)+'.jpg',
-                        scale_one_image(input_imgs_dpu[2][0][:, :, idx]))
-    #######################################################
-    # DPU subgraph 2
-    #######################################################
-    inps = [output_imgs_dpu[0][0], output_imgs_dpu[1][0],
-            output_imgs_dpu[1][1], output_imgs_dpu[1][2], input_imgs_dpu[2]]
-
-    threadAll = []
-    subgraph_id = 2
-    all_dpu_runners = []
-    for i in range(int(threadnum)):
-        all_dpu_runners.append(
-            vart.Runner.create_runner(subgraphs_dpu[subgraph_id], "run"))
-
-    for i in range(int(threadnum)):
-        t1 = threading.Thread(target=runUnetSubgraph, args=(
-            all_dpu_runners[i], inps, cnt, start_list[i], end_list[i], subgraph_id))
-        threadAll.append(t1)
-    for x in threadAll:
-        x.start()
-    for x in threadAll:
-        x.join()
-
-    del all_dpu_runners
-
-    if (Debug==True):
-        for idx in range(cnt):
-            cv2.imwrite('./rpt/pred_3_'+str(idx)+'.jpg',
-                        scale_one_image(output_imgs_dpu[2][0][idx][:, :, 0]))
-    #######################################################
-    # CPU subgraph 3
-    #######################################################
-    prediction = CPUCalcSigmoid(output_imgs_dpu[2][0], cnt)
+    prediction = CPUCalcSigmoid(output_imgs_dpu[0][0], cnt)
     if (Verbose==True):
         for idx in range(cnt):
             cv2.imwrite('./rpt/prediction_'+str(idx)+'.jpg',
@@ -383,3 +318,4 @@ if __name__ == "__main__":
 
     else:
         main(sys.argv)
+

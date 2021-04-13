@@ -9,8 +9,10 @@ import math
 import threading
 import time
 import sys
+import eval_utils as eu
+import csv
 
-Verbose = False
+Verbose = True
 Debug = False
 
 def CPUCalcSigmoid(data, size):
@@ -44,8 +46,13 @@ def scale_one_image(image):
 
 def preprocess_one_image_fn(image_path, width=224, height=224):
 
-    image = cv2.imread(image_path)
-    image = cv2.resize(image, (width, height))
+    if 'jpg' in image_path:
+        #print (image_path)
+        image = cv2.imread(image_path)
+        image = cv2.resize(image, (width, height))
+    else:
+        image = np.zeros((width, height, 3))
+
     #IM_MIN = np.min(image)
     #IM_MAX = np.max(image)
     #image = (2.0/(IM_MAX-IM_MIN)) * (image - IM_MIN) - 1
@@ -53,7 +60,7 @@ def preprocess_one_image_fn(image_path, width=224, height=224):
 
 
 SCRIPT_DIR = get_script_directory()
-calib_image_dir = SCRIPT_DIR + "/dataset/test_data/"
+test_image_dir = SCRIPT_DIR + "/dataset/test_data/"
 global threadnum
 threadnum = 0
 
@@ -130,7 +137,7 @@ def runUnetSubgraph(runner: "Runner", img, cnt, start, end, subgraph_id):
 def main(argv):
     global threadnum
 
-    listimage = os.listdir(calib_image_dir)
+    listimage = os.listdir(test_image_dir)
     threadnum = int(argv[1])
     i = 0
     global runTotall
@@ -231,20 +238,34 @@ def main(argv):
         print (start_list)
         print (end_list)
 
-    time_start = time.time()
     #######################################################
     # CPU subgraph 0
     #######################################################
     width = input_imgs_dpu[0][0].shape[1]
     height = input_imgs_dpu[0][0].shape[2]
+    
+    BATCH_SIZE = cnt
+    RAW_DATASET_DIR = "./dataset"
+    TEST_DIR = os.path.join(RAW_DATASET_DIR, 'test_data')
+    test_csv_path = os.path.join(TEST_DIR,"calib.csv")
+
+    file =  open(test_csv_path, 'r')
+    reader = csv.DictReader(file)
+
+    x_test, y_test = eu.batch_data_get(reader, TEST_DIR, BATCH_SIZE, width, height, augmentation=None)
+
+    file.close()
+
     """image list to be run """
     for i in range(cnt):
-        path = os.path.join(calib_image_dir, listimage[i])
-        input_imgs_dpu[0][0][i] = preprocess_one_image_fn(path, width, height)
+        input_imgs_dpu[0][0][i] = x_test[i]
 
     if (Verbose==True):
         for idx in range(cnt):
             cv2.imwrite('./rpt/image_'+str(idx)+'.jpg', input_imgs_dpu[0][0][idx])
+            cv2.imwrite('./rpt/mask_'+str(idx)+'.jpg', 255*y_test[idx])
+
+    time_start = time.time()
     #######################################################
     # DPU subgraph 0
     #######################################################
@@ -288,6 +309,8 @@ def main(argv):
         % (fps, total_frames, timetotal)
     )
 
+    mIoU = eu.IoU_all (y_test,prediction)
+    print ("IoU for model for the test dataset: ", mIoU)
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
