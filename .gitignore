@@ -2,3 +2,5 @@
 .ipynb_checkpoints/
 best-model.ckpt/
 01_end_to_end_training_to_deployment/files/build/*
+.DS_Store
+._.DS_Store
