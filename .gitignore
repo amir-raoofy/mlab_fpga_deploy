@@ -1,6 +1,18 @@
 *~ # yes, I am using emacs
 .ipynb_checkpoints/
 best-model.ckpt/
+__pycache__
 01_end_to_end_training_to_deployment/files/build/*
 .DS_Store
 ._.DS_Store
+keras_model_backup/
+dataset1/
+.vscode/
+03_end_to_end_ship_detection/files/build/*
+03_end_to_end_ship_detection/files/dataset
+03_end_to_end_ship_detection/files/keras_model
+03_end_to_end_ship_detection/files/rpt
+03_end_to_end_ship_detection/files/log
+03_end_to_end_ship_detection/.DS_Store
+03_end_to_end_ship_detection/files/*tar
+03_end_to_end_ship_detection/files/*tar.gz

@@ -1,0 +1,11 @@
+segmentation-models==0.2.1
+albumentations
+pandas
+seaborn
+tqdm
+pandas
+sklearn
+opencv-python
+keras==2.2.4
+scikit-image
+scikit-image
