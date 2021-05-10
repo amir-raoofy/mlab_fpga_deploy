@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+
 
 '''
 /**
@@ -49,7 +49,7 @@ import tensorflow.keras.losses
 import argparse #DB
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-m",  "--model", help="CNN Models: fcn8, fcn8ups, unet1, unet2, unet3")
+ap.add_argument("-m",  "--model", help="CNN Models: fcn8, fcn8ups, unet1, unet2, unet3, unet4")
 
 args = vars(ap.parse_args())
 
@@ -65,9 +65,17 @@ WEIGHTS_DIR = KERAS_MODEL_DIR
 
 CHKPT_MODEL_DIR = cfg.CHKPT_MODEL_DIR
 
+HEIGHT = cfg.HEIGHT
+WIDTH  = cfg.WIDTH
+N_CLASSES = cfg.NUM_CLASSES
+
+BATCH_SIZE = cfg.BATCH_SIZE
+EPOCHS = cfg.EPOCHS
+
 
 # set learning phase for no training: This line must be executed before loading Keras model
 K.set_learning_phase(0)
+
 
 # load weights & architecture into new model
 if model_name=="fcn8ups" :
@@ -75,13 +83,13 @@ if model_name=="fcn8ups" :
 elif model_name=="fcn8" :
         weights= "fcn8/ep2_trained_fcn8_224x224.hdf5"
 elif model_name=="unet1" :
-        weights= "unet/ep2_trained_unet_model1_224x224.hdf5"
+        weights= "unet/ep" + str(EPOCHS) + "_trained_unet_model" + str(1) + "_" + str(WIDTH) + "x" + str(HEIGHT) + ".hdf5"
 elif model_name=="unet2" :
-        weights= "unet/ep2_trained_unet_model2_224x224.hdf5"
+        weights= "unet/ep" + str(EPOCHS) + "_trained_unet_model" + str(2) + "_" + str(WIDTH) + "x" + str(HEIGHT) + ".hdf5"
 elif model_name=="unet3" :
-        weights= "unet/ep2_trained_unet_model3_224x224.hdf5"
+        weights= "unet/ep" + str(EPOCHS) + "_trained_unet_model" + str(3) + "_" + str(WIDTH) + "x" + str(HEIGHT) + ".hdf5"
 else: # elif model_name=="unet4" :
-        weights= "unet/ep200_trained_unet_model4_224x224.hdf5"
+        weights= "unet/ep" + str(EPOCHS) + "_trained_unet_model" + str(4) + "_" + str(WIDTH) + "x" + str(HEIGHT) + ".hdf5"
 
 print("model name = ", model_name)
 filename = os.path.join(WEIGHTS_DIR,weights)

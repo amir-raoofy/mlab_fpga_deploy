@@ -73,11 +73,10 @@ NORM_FACTOR = 127.5
 NUM_CLASSES = 1
 
 # names of classes
-CLASS_NAMES = ("ship",
-               "background")
+CLASS_NAMES = ("background","ship")
 
 BATCH_SIZE = 32
-EPOCHS = 200
+EPOCHS = 100
 
 
 #######################################################################################################

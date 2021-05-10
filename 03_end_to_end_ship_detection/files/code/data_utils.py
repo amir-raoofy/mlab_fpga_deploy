@@ -170,3 +170,47 @@ def batch_data_get_all(csv_df, dir_prefix, batch_size, augmentation=None):
             Y.append (y)
 
     return np.array (X), np.array(Y)
+
+
+from albumentations import (
+    Compose, HorizontalFlip, VerticalFlip, RandomRotate90, ShiftScaleRotate, Transpose,
+    OneOf, ToFloat,
+    RandomBrightness, RandomContrast, RandomGamma, CLAHE,
+    GridDistortion, ElasticTransform, JpegCompression,
+    RGBShift, GaussNoise, IAAAdditiveGaussianNoise, HueSaturationValue,
+    Blur, MotionBlur, MedianBlur, RandomBrightnessContrast,
+    GridDistortion, OpticalDistortion, RandomSizedCrop, CenterCrop
+)
+
+augmentor = Compose([
+    OneOf([
+        HorizontalFlip(),
+        VerticalFlip(),
+        RandomRotate90(),
+        Transpose(),
+    ], p=0.8), 
+    ShiftScaleRotate(rotate_limit=20),
+    OneOf([
+        MotionBlur(blur_limit=3),
+        MedianBlur(blur_limit=3),
+        Blur(blur_limit=3),
+    ], p=0.3),
+    OneOf([
+        RandomGamma(),
+        RandomContrast(),
+        RandomBrightness(),
+        CLAHE(),
+     ], p=0.3),
+    OneOf([
+        IAAAdditiveGaussianNoise(),
+        HueSaturationValue(),
+        GaussNoise(),
+    ], p=0.2),
+    OneOf([
+        ElasticTransform(),
+        OpticalDistortion(),
+        GridDistortion(),
+    ], p=0.3),
+    RandomSizedCrop(min_max_height=(IMG_HW/2, IMG_HW), height=IMG_HW, width=IMG_HW, p=0.3),
+    ToFloat(max_value=1),
+],p=1)

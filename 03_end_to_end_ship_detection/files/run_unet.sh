@@ -471,7 +471,6 @@ main() {
   conda activate vitis-ai-tensorflow
 
   # assuming you have run first the run_fcn8.sh script, you do not need to clean up anything
-: '
 
     # clean up previous results
     rm -rf ${BUILD_DIR}; mkdir ${BUILD_DIR}
@@ -536,7 +535,6 @@ main() {
     # move xmodel to  target board directory
     #mv  ${COMPILE_DIR}/${CNN}4/*.xmodel    ${TARGET_104}/${CNN}/v4/model/
     #rm ${TARGET_104}/${CNN}/v4/model/*_org.xmodel
-'
 
     # copy test images into target board
 

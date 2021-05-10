@@ -129,7 +129,7 @@ def graph_eval(input_graph_def, input_node, output_node):
 
         plt.xticks([])
         plt.yticks([])
-        plt.savefig("../rpt/tmp9.png")
+        plt.savefig("../rpt/tmp11.png")
         plt.show()
 
     print ('FINISHED!')

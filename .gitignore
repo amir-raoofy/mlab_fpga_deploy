@@ -16,3 +16,6 @@ dataset1/
 03_end_to_end_ship_detection/.DS_Store
 03_end_to_end_ship_detection/files/*tar
 03_end_to_end_ship_detection/files/*tar.gz
+*.xmodel
+*.tar
+*.tar.gz
