@@ -31,13 +31,13 @@ import sys
 import shutil
 
 # Silence TensorFlow messages
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 import tensorflow as tf
 from tensorflow.keras import backend as K
 from tensorflow.keras.models import model_from_json, load_model
 
-from config import fcn_config as cfg
+from config import net_config as cfg
 
 from segmentation_models.losses    import bce_jaccard_loss, bce_dice_loss
 from segmentation_models.metrics   import iou_score, f2_score

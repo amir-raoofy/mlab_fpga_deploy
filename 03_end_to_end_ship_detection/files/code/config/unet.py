@@ -4,7 +4,7 @@
 import sys, time, warnings, os
 
 # Silence TensorFlow messages
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 ## Import usual libraries
 import tensorflow as tf
 #from tensorflow.keras.backend import set_session
@@ -22,12 +22,12 @@ from segmentation_models.backbones import get_preprocessing
 from segmentation_models.utils     import set_trainable
 from segmentation_models.losses    import bce_jaccard_loss, bce_dice_loss
 from segmentation_models.metrics   import iou_score, f2_score
-from config import fcn_config as cfg
+from config import net_config as cfg
 ######################################################################
-IMG_HW    = 768
+IMG_HW    = cfg.IMG_HW
 HEIGHT = cfg.HEIGHT
 WIDTH  = cfg.WIDTH
-BACKBONE  = 'resnet34'
+BACKBONE  = cfg.BACKBONE
 ######################################################################
 
 #Function to add 2 convolutional layers with the parameters passed to it
@@ -121,7 +121,7 @@ def UNET_v1( nClasses, input_height, input_width, n_filters=16*4, dropout=0.1,
                  activation="relu", padding="same", kernel_initializer="he_normal")(c9)
     c11 = Conv2D(filters=nClasses, kernel_size=1, data_format=IMAGE_ORDERING, activation="sigmoid")(c10)
 
-    model = Model(inputs=img_input, outputs=c10)
+    model = Model(inputs=img_input, outputs=c11)
 
     return model
 
@@ -204,7 +204,7 @@ def UNET_v2( nClasses, input_height, input_width, n_filters=16*4, dropout=0.1,
                  activation="relu", padding="same", kernel_initializer="he_normal")(c9)
     c11 = Conv2D(filters=nClasses, kernel_size=1, data_format=IMAGE_ORDERING, activation="sigmoid")(c10)
 
-    model = Model(inputs=img_input, outputs=c10)
+    model = Model(inputs=img_input, outputs=c11)
 
     return model
 
@@ -289,11 +289,10 @@ def UNET_v3( nClasses, input_height, input_width, n_filters=16*4, dropout=0.1,
                  activation="relu", padding="same", kernel_initializer="he_normal")(c9)
     c11 = Conv2D(filters=nClasses, kernel_size=1, data_format=IMAGE_ORDERING, activation="sigmoid")(c10)
 
-    model = Model(inputs=img_input, outputs=c10)
+    model = Model(inputs=img_input, outputs=c11)
 
     return model
 
-
 def UNET_v4( nClasses, input_height, input_width, n_filters=16*4, dropout=0.1, batchnorm=True, activation=True):
-    model = Unet(BACKBONE, encoder_weights='imagenet', classes=nClasses, activation='sigmoid', input_shape=(HEIGHT, WIDTH, 3), decoder_filters=(128, 64, 32, 16, 8))
+    model = Unet(BACKBONE, encoder_weights='imagenet', classes=nClasses, activation='sigmoid', input_shape=(HEIGHT, WIDTH, 3), decoder_filters=(128, 64, 32, 16, 8), decoder_use_batchnorm=batchnorm, decoder_block_type='upsampling') #'transpose'
     return model

@@ -10,11 +10,11 @@ from random import random
 import sys, warnings
 import pandas as pd
 
-from config import fcn_config as cfg
+from config import net_config as cfg
 import data_utils as dus
 
 # Silence TensorFlow messages
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import tensorflow as tf
 from tensorflow.keras.backend               import set_session
 from tensorflow.keras                       import backend
@@ -43,7 +43,7 @@ os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 config = tf.compat.v1.ConfigProto()
 config.gpu_options.per_process_gpu_memory_fraction = 0.85
 #config.gpu_options.allow_growth = True
-config.gpu_options.visible_device_list = "0"
+#config.gpu_options.visible_device_list = "0"
 set_session(tf.compat.v1.Session(config=config))
 
 print("\n")
@@ -74,7 +74,7 @@ plt.xscale('log')
 plt.legend().set_visible(False)
 plt.xlabel('# of pixel is ship')
 plt.ylabel('Density')
-plt.savefig("../rpt/tmp1.png")
+plt.savefig("../rpt/unet_model_progress_01_" + ".png")
 plt.show()
 
 plt.figure()
@@ -88,7 +88,7 @@ plt.pie(
     pctdistance = 0.6
 )
 plt.title('Image with Ship(s) or Not')
-plt.savefig("../rpt/tmp2.png")
+plt.savefig("../rpt/unet_model_progress_02_" + ".png")
 plt.show()
 
 plt.figure()
@@ -97,7 +97,7 @@ plt.bar(figdf.index, figdf.values)
 plt.xlabel('# of Ship(s) in image', fontsize=14)
 plt.ylabel('# of Images', fontsize=14)
 plt.title('Raw Dataset with Ship', fontsize=18)
-plt.savefig("../rpt/tmp3.png")
+plt.savefig("../rpt/unet_model_progress_03_" + ".png")
 plt.show()
 
 balanced_train_csv = (
@@ -126,7 +126,7 @@ plt.pie(
     pctdistance = 0.6
 );
 plt.title('Image with Ship(s) or Not');
-plt.savefig("../rpt/tmp4.png")
+plt.savefig("../rpt/unet_model_progress_04_" + ".png")
 plt.show()
 
 plt.figure()
@@ -135,7 +135,7 @@ plt.bar(figdf.index, figdf.values)
 plt.xlabel('# of Ship(s) in image', fontsize=14)
 plt.ylabel('# of Images', fontsize=14)
 plt.title('Balanced Dataset w/o Ship', fontsize=18)
-plt.savefig("../rpt/tmp5.png")
+plt.savefig("../rpt/unet_model_progress_05_" + ".png")
 plt.show()
 
 fig, axs = plt.subplots(ncols=2, nrows=5, figsize=(20, 20), sharex=True, sharey=True)
@@ -146,7 +146,7 @@ for i, img_id in enumerate( np.random.choice(train_csv.dropna()['ImageId'].uniqu
     x, y = dus.load_paired_data(img_df, TRAIN_DIR)
 
     axs[i,0].set_ylabel(img_id)
-    axs[i,0].imshow(x/255)
+    axs[i,0].imshow(x)
     axs[i,1].imshow(y[:,:,0])
 
 axs[0,0].set_title('Input')
@@ -154,7 +154,7 @@ axs[0,1].set_title('Mask')
 
 plt.xticks([])
 plt.yticks([])
-plt.savefig("../rpt/tmp6.png")
+plt.savefig("../rpt/unet_model_progress_06_" + ".png")
 plt.show()
 
 b_train_csv, b_valid_csv = train_test_split(balanced_train_csv['ImageId'], test_size = 0.2)

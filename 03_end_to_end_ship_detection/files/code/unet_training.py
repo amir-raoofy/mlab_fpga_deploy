@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import sys, warnings
 from datetime import datetime #DB
 
-from config import fcn_config as cfg
+from config import net_config as cfg
 from config import unet as unet #DB
 import data_utils as dus #DB
 
@@ -15,7 +15,7 @@ import pandas as pd
 warnings.filterwarnings("ignore")
 
 # Silence TensorFlow messages
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 ## Import usual libraries
 import tensorflow as tf
 
@@ -32,12 +32,18 @@ from tqdm.auto import tqdm
 from segmentation_models.losses    import bce_jaccard_loss, bce_dice_loss
 from segmentation_models.metrics   import iou_score, f2_score
 
-from keras.callbacks import ReduceLROnPlateau, ModelCheckpoint, EarlyStopping, LearningRateScheduler
-#from tensorflow.keras.callbacks import ReduceLROnPlateau, ModelCheckpoint, EarlyStopping, LearningRateScheduler
-
 ######################################################################
-IMG_HW    = 768
-BACKBONE  = 'resnet34'
+IMG_HW    = cfg.IMG_HW
+BACKBONE  = cfg.BACKBONE
+
+HEIGHT = cfg.HEIGHT
+WIDTH  = cfg.WIDTH
+N_CLASSES = cfg.NUM_CLASSES
+
+BATCH_SIZE = cfg.BATCH_SIZE
+STEPS_PER_EPOCH = cfg.STEPS_PER_EPOCH
+VAL_STEPS = cfg.VAL_STEPS
+EPOCHS = cfg.EPOCHS
 ######################################################################
 
 # workaround for TF1.15 bug "Could not create cudnn handle: CUDNN_STATUS_INTERNAL_ERROR"
@@ -47,7 +53,7 @@ os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
 config = tf.compat.v1.ConfigProto()
 config.gpu_options.per_process_gpu_memory_fraction = 0.85
 #config.gpu_options.allow_growth = True
-config.gpu_options.visible_device_list = "1"
+#config.gpu_options.visible_device_list = "1"
 set_session(tf.compat.v1.Session(config=config))
 K.backend.set_session(tf.compat.v1.Session(config=config))
 
@@ -59,26 +65,15 @@ args = vars(ap.parse_args())
 model_type= int(args["model"])
 print("UNET MODEL = ", model_type)
 
-
-HEIGHT = cfg.HEIGHT
-WIDTH  = cfg.WIDTH
-N_CLASSES = cfg.NUM_CLASSES
-
-BATCH_SIZE = cfg.BATCH_SIZE
-EPOCHS = cfg.EPOCHS
-
 ######################################################################
 # directories
 ######################################################################
-
 RAW_DATASET_DIR = cfg.RAW_DATASET_DIR
 TRAIN_DIR = os.path.join(RAW_DATASET_DIR, 'train_v2')
 dir_data = cfg.DATASET_DIR
 
 b_train_csv = pd.read_csv(os.path.join(dir_data,"train.csv"))
 b_valid_csv = pd.read_csv(os.path.join(dir_data,"valid.csv"))
-
-
 ######################################################################
 # model a
 ######################################################################
@@ -93,8 +88,17 @@ else:
         model = unet.UNET_v4(N_CLASSES, HEIGHT, WIDTH)
 model.summary()
 
+
+######################################################################
+# it is a nasty way to deal with this, but works for now
+if (model_type==1 or model_type==2 or model_type==3):
+    from tensorflow.keras.callbacks import ReduceLROnPlateau, ModelCheckpoint, EarlyStopping, LearningRateScheduler
+else:
+    from keras.callbacks import ReduceLROnPlateau, ModelCheckpoint, EarlyStopping, LearningRateScheduler
+######################################################################
+
 # plot the CNN model
-plot_model(model, to_file="../rpt/unet_model_" +str(model_type) + "_"  + str(WIDTH) + "x" + str(HEIGHT) + ".png", show_shapes=True)
+plot_model(model, to_file="../rpt/unet_model_m_" +str(model_type) + "_"  + str(WIDTH) + "x" + str(HEIGHT) + ".png", show_shapes=True)
 
 optimizer = 'Adam'
 #optimizer = SGD(lr=1E-2, decay=5**(-4), momentum=0.9, nesterov=True)
@@ -128,8 +132,8 @@ startTime1 = datetime.now() #DB
 history = model.fit_generator(
     generator        = dus.batch_data_gen(b_train_csv, TRAIN_DIR, BATCH_SIZE, augmentation=None), 
     validation_data  = dus.batch_data_gen(b_valid_csv, TRAIN_DIR, BATCH_SIZE), 
-    validation_steps = 50,
-    steps_per_epoch  = 200,
+    validation_steps = VAL_STEPS,
+    steps_per_epoch  = STEPS_PER_EPOCH,
     epochs           = EPOCHS,
     verbose = 1,
     callbacks = callbacks_list
@@ -149,54 +153,55 @@ epochs = np.arange(1, len(los)+1)
 plt.plot(epochs, los,  label='Training loss')
 plt.plot(epochs, vlos, label='Validation loss')
 plt.legend()
-plt.savefig("../rpt/tmp7.png")
+plt.savefig("../rpt/unet_model_progress_07_m_" + str(model_type) + "_" + str(WIDTH) + "x" + str(HEIGHT) + ".png")
 plt.show()
 
 epochs = np.arange(1, len(los)+1)
 plt.plot(epochs, iou,  label='IoU')
 plt.plot(epochs, viou, label='Validation IoU')
 plt.legend()
-plt.savefig("../rpt/tmp8.png")
+plt.savefig("../rpt/unet_model_progress_08_m_" + str(model_type) + "_" + str(WIDTH) + "x" + str(HEIGHT) + ".png")
 plt.show()
 
 # fine_tunning
-model.load_weights(file_path_best_checkpoint)
-lrs = LearningRateScheduler(lambda epoch: 0.001 * 0.3 ** (epoch // 2))   
-callbacks_list_fine_tunning=[ checkpoint, lrs ]
+if (cfg.ENABLE_FINE_TUNNING):
+    model.load_weights(file_path_best_checkpoint)
+    lrs = LearningRateScheduler(lambda epoch: 0.001 * 0.3 ** (epoch // 2))   
+    callbacks_list_fine_tunning=[ checkpoint, lrs ]
 
-history = model.fit_generator(
-    generator        = dus.batch_data_gen(b_train_csv, TRAIN_DIR, BATCH_SIZE, augmentation=dus.augmentor), 
-    validation_data  = dus.batch_data_gen(b_valid_csv, TRAIN_DIR, BATCH_SIZE), 
-    validation_steps = 50,
-    steps_per_epoch  = 200,
-    epochs           = EPOCHS//2,
-    verbose = 1,
-    callbacks= callbacks_list_fine_tunning,
-)
+    history = model.fit_generator(
+        generator        = dus.batch_data_gen(b_train_csv, TRAIN_DIR, BATCH_SIZE, augmentation=dus.augmentor), 
+        validation_data  = dus.batch_data_gen(b_valid_csv, TRAIN_DIR, BATCH_SIZE), 
+        validation_steps = VAL_STEPS,
+        steps_per_epoch  = STEPS_PER_EPOCH,
+        epochs           = EPOCHS//2,
+        verbose = 1,
+        callbacks= callbacks_list_fine_tunning,
+    )
 
-los  = model.history.history['loss']
-vlos = model.history.history['val_loss']
-iou  = model.history.history['iou_score']
-viou = model.history.history['val_iou_score']
+    los  = model.history.history['loss']
+    vlos = model.history.history['val_loss']
+    iou  = model.history.history['iou_score']
+    viou = model.history.history['val_iou_score']
 
-epochs = np.arange(1, len(los)+1)
-plt.plot(epochs, los,  label='Training loss')
-plt.plot(epochs, vlos, label='Validation loss')
-plt.legend()
-plt.savefig("../rpt/tmp9.png")
-plt.show()
+    epochs = np.arange(1, len(los)+1)
+    plt.plot(epochs, los,  label='Training loss')
+    plt.plot(epochs, vlos, label='Validation loss')
+    plt.legend()
+    plt.savefig("../rpt/unet_model_progress_09_m_" + str(model_type) + "_" + str(WIDTH) + "x" + str(HEIGHT) + ".png")
+    plt.show()
 
-epochs = np.arange(1, len(los)+1)
-plt.plot(epochs, iou,  label='IoU')
-plt.plot(epochs, viou, label='Validation IoU')
-plt.legend()
-plt.savefig("../rpt/tmp10.png")
-plt.show()
+    epochs = np.arange(1, len(los)+1)
+    plt.plot(epochs, iou,  label='IoU')
+    plt.plot(epochs, viou, label='Validation IoU')
+    plt.legend()
+    plt.savefig("../rpt/unet_model_progress_10_m_" + str(model_type) + "_" + str(WIDTH) + "x" + str(HEIGHT) + ".png")
+    plt.show()
 
 for key in ["loss", "val_loss"]:
     plt.plot(history.history[key],label=key)
 plt.legend()
-plt.savefig("../rpt/unet_model_" + str(model_type) + "_training_curves_" + str(WIDTH) + "x" + str(HEIGHT) + ".png")
+plt.savefig("../rpt/unet_model_progress_11_m_" + str(model_type) + "_training_curves_" + str(WIDTH) + "x" + str(HEIGHT) + ".png")
 
 model.save("../keras_model/unet/ep" + str(EPOCHS) + "_trained_unet_model" + str(model_type) + "_" + str(WIDTH) + "x" + str(HEIGHT) + ".hdf5")
 

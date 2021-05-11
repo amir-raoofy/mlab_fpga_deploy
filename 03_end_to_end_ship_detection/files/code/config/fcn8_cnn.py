@@ -63,7 +63,7 @@ import sys, time, warnings
 #1 = INFO messages are not printed
 #2 = INFO and WARNING messages are not printed
 #3 = INFO, WARNING, and ERROR messages are not printed
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Conv2D,BatchNormalization,Add,Dropout,MaxPooling2D,Input
 from tensorflow.keras.layers import Activation,UpSampling2D, Conv2DTranspose
@@ -72,7 +72,7 @@ import matplotlib.pyplot as plt
 
 warnings.filterwarnings("ignore")
 
-from config import fcn_config as cfg #DB
+from config import net_config as cfg #DB
 
 
 def NormalizeImageArr( path ):

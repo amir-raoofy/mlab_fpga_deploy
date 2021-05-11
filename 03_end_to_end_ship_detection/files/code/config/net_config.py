@@ -63,21 +63,29 @@ TB_LOG_DIR = os.path.join(SCRIPT_DIR, "../build/tb_logs")
 ###############################################################################
 
 #Size of images
-WIDTH  = 224
-HEIGHT = 224
+IMG_HW              = int (os.environ["IMG_HW"])
+WIDTH               = int (os.environ["WIDTH"])
+HEIGHT              = int (os.environ["HEIGHT"])
+BATCH_SIZE          = int (os.environ["BATCH_SIZE"])
+EPOCHS              = int (os.environ["EPOCHS"])
+STEPS_PER_EPOCH     = int (os.environ["STEPS_PER_EPOCH"])
+VAL_STEPS           = int (os.environ["VAL_STEPS"])
+ENABLE_FINE_TUNNING = bool(os.environ["ENABLE_FINE_TUNNING"])
+BACKBONE            = str (os.environ["BACKBONE"])
+
+ENABLE_FINE_TUNNING = False
+BACKBONE  = 'resnet34'
 
 #normalization factor
-NORM_FACTOR = 127.5
+#NORM_FACTOR = 127.5
+NORM_FACTOR = 255
 
 #number of classes
 NUM_CLASSES = 1
 
 # names of classes
-CLASS_NAMES = ("background","ship")
-
-BATCH_SIZE = 32
-EPOCHS = 100
-
+#CLASS_NAMES = ("background","ship")
+CLASS_NAMES = ('ship')
 
 #######################################################################################################
 
