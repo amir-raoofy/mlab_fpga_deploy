@@ -125,9 +125,6 @@ def UNET_v1( nClasses, input_height, input_width, n_filters=16*4, dropout=0.1,
 
     return model
 
-
-
-
 # like UNET_v1 but with a Conv2D layer betweeb UpSampling2D aand Concatenate layers
 def UNET_v2( nClasses, input_height, input_width, n_filters=16*4, dropout=0.1,
           batchnorm=True, activation=True):

@@ -8,7 +8,7 @@
 
 - put extract the `airbus-ship-detection.zip` in `./files` as `dataset`.
 - run the container `./docker_run.sh xilinx/vitis-ai-gpu`.
-- run the driver `./run_unet.sh`.
+- run the driver `./run_all.sh`.
 
 The above instruction creates the xmodel required for the deployment on FPGA, however we still need to build the host application for the target baord. We can either use the python codes which already use vart and xir or use the following procedure to cross-compile C codes code for the host of the target board: 
 

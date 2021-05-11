@@ -27,7 +27,7 @@ export GIF_4="graph_input_fn.calib_input4"
 
 export TF_FORCE_GPU_ALLOW_GROWTH="true"
 export CUDA_DEVICE_ORDER="PCI_BUS_ID"
-#export CUDA_VISIBLE_DEVICES="1"
+export CUDA_VISIBLE_DEVICES="1"
 
 # folders
 ARCHIVE_DIR=./archive
@@ -566,7 +566,7 @@ main() {
     cp -r log ${TARGET_102}/log_deploy
     tar -cvf target_zcu102.tar ${TARGET_102}/
     gzip target_zcu102.tar
-    mv target_zcu102.tar.gz ${ARCHIVE_DIR}/target_zcu102_unet_${BACKBONE}_${EPOCHS}ep_${BATCH_SIZE}x${WIDTH}x${HEIGHT}.tar.gz
+    mv target_zcu102.tar.gz ${ARCHIVE_DIR}/target_zcu102_unet_${BACKBONE}_ep${EPOCHS}_bit${WEIGHT_BIT}_${ACTIVATION_BIT}_size${BATCH_SIZE}x${WIDTH}x${HEIGHT}.tar.gz
 
     ##cp test.tar.gz ${TARGET_104}/
     #cp -r rpt ${TARGET_104}/rpt_deploy
