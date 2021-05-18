@@ -260,8 +260,8 @@ int main(int argc, char* argv[]) {
 
   auto graph = xir::Graph::deserialize(argv[1]);
   auto subgraph = get_dpu_subgraph(graph.get());
-  CHECK_EQ(subgraph.size(), 1u)
-      << "CNN should have one and only one dpu subgraph.";
+  //CHECK_EQ(subgraph.size(), 1u)
+  //    << "CNN should have one and only one dpu subgraph.";
   LOG(INFO) << "create running for subgraph: " << subgraph[0]->get_name();
   /*create runner*/
   auto runner  = vart::Runner::create_runner(subgraph[0], "run");

@@ -121,7 +121,7 @@ checkpoint = ModelCheckpoint(
 
 reduce_lr  = ReduceLROnPlateau(
     monitor='val_loss', mode='min', 
-    factor=0.3, patience=3, min_lr=0.00001, 
+    factor=0.3, patience=3, min_lr=0.000001, 
     verbose=1
 )
 callbacks_list=[ checkpoint, reduce_lr ]

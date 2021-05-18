@@ -15,15 +15,15 @@ CNN=unet
 #export ACTIVATION_BIT="8"
 #export CALIB_ITERS="2"
 
-export GIF_1="graph_input_fn.calib_input1"
-export GIF_2="graph_input_fn.calib_input2"
-export GIF_3="graph_input_fn.calib_input3"
-export GIF_4="graph_input_fn.calib_input4"
+#export GIF_1="graph_input_fn.calib_input1"
+#export GIF_2="graph_input_fn.calib_input2"
+#export GIF_3="graph_input_fn.calib_input3"
+#export GIF_4="graph_input_fn.calib_input4"
 
-#export GIF_1="graph_input_fn.calib_input_dbg"
-#export GIF_2="graph_input_fn.calib_input_dbg"
-#export GIF_3="graph_input_fn.calib_input_dbg"
-#export GIF_4="graph_input_fn.calib_input_dbg4"
+export GIF_1="graph_input_fn.calib_input_dbg"
+export GIF_2="graph_input_fn.calib_input_dbg"
+export GIF_3="graph_input_fn.calib_input_dbg"
+export GIF_4="graph_input_fn.calib_input_dbg4"
 
 export TF_FORCE_GPU_ALLOW_GROWTH="true"
 export CUDA_DEVICE_ORDER="PCI_BUS_ID"
@@ -471,6 +471,7 @@ main() {
 
   # assuming you have run first the run_fcn8.sh script, you do not need to clean up anything
 
+
     # clean up previous results
     rm -rf ${BUILD_DIR}; mkdir ${BUILD_DIR}
     rm -rf ${LOG_DIR}; mkdir ${LOG_DIR}
@@ -487,6 +488,10 @@ main() {
     rm -rf ${TARGET_190}/*.tar.gz ${TARGET_102}/*.tar.gz ${TARGET_104}/*.tar.gz
     rm -rf ${TARGET_190}/rpt_deploy/ ${TARGET_102}/rpt_deploy/ ${TARGET_104}/rpt_deploy/
     rm -rf ${TARGET_190}/log_deploy ${TARGET_102}/log_deploy ${TARGET_104}/log_deploy
+    rm -rf ${TARGET_190}/unet/v1/model/*.xmodel ${TARGET_190}/unet/v2/model/*.xmodel ${TARGET_190}/unet/v3/model/*.xmodel ${TARGET_190}/unet/v4/model/*.xmodel
+    rm -rf ${TARGET_102}/unet/v1/model/*.xmodel ${TARGET_102}/unet/v2/model/*.xmodel ${TARGET_102}/unet/v3/model/*.xmodel ${TARGET_102}/unet/v4/model/*.xmodel
+    rm -rf ${TARGET_104}/unet/v1/model/*.xmodel ${TARGET_104}/unet/v2/model/*.xmodel ${TARGET_104}/unet/v3/model/*.xmodel ${TARGET_104}/unet/v4/model/*.xmodel
+
     rm -rf *.tar.gz *.tar
 
     mkdir ${LOG_DIR}/${CNN}
@@ -531,7 +536,14 @@ main() {
     # compile with Vitis AI to generate elf file for ZCU102
     6_compile_vai_zcu102 2>&1 | tee ${LOG_DIR}/${CNN}/${COMP_LOG}
     # move xmodel to  target board directory
-    mv ${COMPILE_DIR}/${CNN}4/*.xmodel    ${TARGET_102}/${CNN}/v4/model/
+    mv ${COMPILE_DIR}/${CNN}1/*.xmodel ${TARGET_102}/${CNN}/v1/model/
+    mv ${COMPILE_DIR}/${CNN}2/*.xmodel ${TARGET_102}/${CNN}/v2/model/
+    mv ${COMPILE_DIR}/${CNN}3/*.xmodel ${TARGET_102}/${CNN}/v3/model/
+    mv ${COMPILE_DIR}/${CNN}4/*.xmodel ${TARGET_102}/${CNN}/v4/model/
+
+    rm ${TARGET_102}/${CNN}/v1/model/*_org.xmodel
+    rm ${TARGET_102}/${CNN}/v2/model/*_org.xmodel
+    rm ${TARGET_102}/${CNN}/v3/model/*_org.xmodel
     rm ${TARGET_102}/${CNN}/v4/model/*_org.xmodel
 
     # compile with Vitis AI to generate elf file for ZCU104

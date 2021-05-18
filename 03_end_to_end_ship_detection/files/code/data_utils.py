@@ -119,7 +119,7 @@ def batch_data_get(csv_df, dir_prefix, batch_size, augmentation=None):
 
     print ("reading the test files")
 
-    np.random.shuffle(img_ids)
+    #snp.random.shuffle(img_ids)
     X =[]
     Y= []
     #for idx in tqdm( range(0, n_imgs, batch_size) ):
@@ -151,7 +151,7 @@ def batch_data_get_all(csv_df, dir_prefix, batch_size, augmentation=None):
 
     print ("reading the test files")
 
-    np.random.shuffle(img_ids)
+    #np.random.shuffle(img_ids)
     X =[]
     Y= []
     for idx in tqdm( range(0, n_imgs, batch_size) ):
@@ -198,7 +198,7 @@ def batch_data_get_images(csv_df, dir_prefix, batch_size, augmentation=None):
 
     print ("reading the test files")
 
-    np.random.shuffle(img_ids)
+    #np.random.shuffle(img_ids)
     X =[]
     #for idx in tqdm( range(0, n_imgs, batch_size) ):
     #for idx in tqdm( range(0, 64, batch_size) ):
@@ -227,7 +227,7 @@ def batch_data_get_images_all(csv_df, dir_prefix, batch_size, augmentation=None)
 
     print ("reading the test files")
 
-    np.random.shuffle(img_ids)
+    #np.random.shuffle(img_ids)
     X =[]
     for idx in tqdm( range(0, n_imgs, batch_size) ):
     
