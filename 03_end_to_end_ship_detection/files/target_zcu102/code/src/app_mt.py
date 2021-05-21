@@ -1,105 +1,61 @@
-'''
-Copyright 2020 Xilinx Inc.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-    http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-'''
-
 from ctypes import *
 from typing import List
 import cv2
 import numpy as np
+import xir
 import vart
-import xir
 import os
-import pathlib
-import xir
+import math
 import threading
 import time
 import sys
-import argparse
-import math
+
+Verbose = True
+Debug = False
+
+def CPUCalcSigmoid(data, size):
+    output = []
+    for idx in range(size):
+        output.append(1.0/(1.0+np.exp(-data[idx])))
+    return output
+
+
+def CPUZeroPad2d(data, size):
+    output = []
+    for idx in range(size):
+        #output.append ( np.pad(data[idx], 1, 0) )
+        #print (data[idx].shape)
+        output.append(np.pad(data[idx], ((1, 1), (1, 1), (0, 0)), 'constant'))
+    return output
 
 
 def get_script_directory():
     path = os.getcwd()
     return path
 
-def CPUCalcArgmax(data):
-    '''
-    returns index of highest value in data
-    '''
-    return np.argmax(data)
 
-def CPUCalcSoftmax(data,size):
-    '''
-    Calculate softmax
-    data: data to be calculated
-    size: data size
-    return: softamx result
-    '''
-    #print("\n data.shape ", data.shape)
-    #print("\n data.size  ", size)
-    sum=0.0
-    result = [0 for i in range(size)]
-    for i in range(size):
-        result[i] = math.exp(data[i])
-        sum +=result[i]
-    for i in range(size):
-        result[i] /=sum
-    return result
+def scale_one_image(image):
+    IM_MIN = np.min(image)
+    IM_MAX = np.max(image)
+    if (IM_MIN != IM_MAX):
+        image = (255.0/(IM_MAX-IM_MIN)) * (image - IM_MIN)
+    return image
 
 
+def preprocess_one_image_fn(image_path, width=224, height=224):
 
-def NormalizeImageArr( path ):
-    img = cv2.imread(path, 1)
-    img = img.astype(np.float32)
-    img = img/127.5 - 1.0
-    return img
+    image = cv2.imread(image_path)
+    image = cv2.resize(image, (width, height))
+    #IM_MIN = np.min(image)
+    #IM_MAX = np.max(image)
+    #image = (2.0/(IM_MAX-IM_MIN)) * (image - IM_MIN) - 1
+    return image
 
-def LoadSegmentationArr( path , nClasses,  width , height ):
-    seg_labels = np.zeros((  height , width  , nClasses ))
-    img = cv2.imread(path, 1)
-    img = img[:, : , 0]
-    for c in range(nClasses):
-        seg_labels[: , : , c ] = (img == c ).astype(int)
-    return seg_labels
 
-def IoU(Yi,y_predi):
-    ## mean Intersection over Union
-    ## Mean IoU = TP/(FN + TP + FP)
-    CLASS_NAMES = ("Sky",
-                   "Wall",
-                   "Pole",
-                   "Road",
-                   "Sidewalk",
-                   "Vegetation",
-                   "Sign",
-                   "Fence",
-                   "vehicle",
-                   "Pedestrian",
-                   "Bicyclist",
-                   "miscellanea")
-    IoUs = []
-    Nclass = int(np.max(Yi)) + 1
-    for c in range(Nclass):
-        TP = np.sum( (Yi == c)&(y_predi == c))
-        FP = np.sum( (Yi != c)&(y_predi == c))
-        FN = np.sum( (Yi == c)&(y_predi != c))
-        IoU = TP/float(TP + FP + FN)
-        #print("class {:02.0f}: #TP={:7.0f}, #FP={:7.0f}, #FN={:7.0f}, IoU={:4.3f}".format(c,TP,FP,FN,IoU))
-        print("class (%2d) %12.12s: #TP=%7.0f, #FP=%7.0f, #FN=%7.0f, IoU=%4.3f" % (c, CLASS_NAMES[c],TP,FP,FN,IoU))
-        IoUs.append(IoU)
-    mIoU = np.mean(IoUs)
-    print("_________________")
-    print("Mean IoU: {:4.3f}".format(mIoU))
-    return
+SCRIPT_DIR = get_script_directory()
+calib_image_dir = SCRIPT_DIR + "/dataset/test_data/"
+global threadnum
+threadnum = 0
 
 
 def get_child_subgraph_dpu(graph: "Graph") -> List["Subgraph"]:
@@ -119,157 +75,271 @@ def get_child_subgraph_dpu(graph: "Graph") -> List["Subgraph"]:
     ]
 
 
-def runDPU(id,start,dpu,img):
+def get_child_subgraph_cpu(graph: "Graph") -> List["Subgraph"]:
+    assert graph is not None, "'graph' should not be None."
+    root_subgraph = graph.get_root_subgraph()
+    assert (
+        root_subgraph is not None
+    ), "Failed to get root subgraph of input Graph object."
+    if root_subgraph.is_leaf:
+        return []
+    child_subgraphs = root_subgraph.toposort_child_subgraph()
+    assert child_subgraphs is not None and len(child_subgraphs) > 0
+    return [
+        cs
+        for cs in child_subgraphs
+        if not (cs.has_attr("device") and cs.get_attr("device").upper() == "DPU")
+    ]
 
-    '''get tensor'''
-    inputTensors = dpu.get_input_tensors()
-    outputTensors = dpu.get_output_tensors()
+
+def runUnetSubgraph(runner: "Runner", img, cnt, subgraph_id):
+    """get tensor"""
+    inputTensors = runner.get_input_tensors()
+    outputTensors = runner.get_output_tensors()
     input_ndim = tuple(inputTensors[0].dims)
     output_ndim = tuple(outputTensors[0].dims)
-    print("\nrunDPU-  INPUT DIM: ",  input_ndim)
-    print("\nrunDPU- OUTPUT DIM: ", output_ndim)
 
-    batchSize = input_ndim[0]
-    print()
-    n_of_images = len(img)
+    n_of_images = len(img[0])
     count = 0
-    write_index = start
-    print("\nrunDPU- batchSize: ", batchSize)
-    print("\nrunDPU- # images : ", n_of_images)
+    while count < cnt:
+        runSize = input_ndim[0]
+        """prepare batch input/output """
+        inputData = [np.ones(tuple(inputTensors[k].dims), dtype=np.float32, order="C")
+                     for k in range(len(inputTensors))]
+        outputData = [np.empty(tuple(outputTensors[k].dims), dtype=np.float32, order="C")
+                      for k in range(len(outputTensors))]
 
-    while count < n_of_images:
-        if (count+batchSize<=n_of_images):
-            runSize = batchSize
-        else:
-            runSize=n_of_images-count
-        if count==0:
-            print("\nrunDPU- # runSize : ", runSize)
+        """init input image to input buffer """
+        for k in range(len(img)):
+            for j in range(runSize):
+                imageRun = inputData[k]
+                imageRun[j, ...] = img[k][(
+                    count + j) % n_of_images].reshape(tuple(inputTensors[k].dims)[1:])
 
-        '''prepare batch input/output '''
-        outputData = []
-        inputData = []
-        inputData = [np.empty(input_ndim, dtype=np.float32, order="C")]
-        outputData = [np.empty(output_ndim, dtype=np.float32, order="C")]
+        """run with batch """
+        job_id = runner.execute_async(inputData, outputData)
+        runner.wait(job_id)
 
-        '''init input image to input buffer '''
-        for j in range(runSize):
-            imageRun = inputData[0]
-            imageRun[j, ...] = img[(count + j) % n_of_images].reshape(input_ndim[1:])
-
-        '''run with batch '''
-        job_id = dpu.execute_async(inputData,outputData)
-        dpu.wait(job_id)
-
-        '''store output vectors '''
-        for j in range(runSize):
-            out_q[write_index] = outputData[0][j] #CPUCalcSoftmax(outputData[0], 12*224*224) #CPUCalcArgmax(outputData[0][j])
-            write_index += 1
+        for k in range(len(outputTensors)):
+            for j in range(runSize):
+                output_imgs_dpu[subgraph_id][k][(count + j) %
+                                      n_of_images] = outputData[k][j]
 
         count = count + runSize
 
-    print("\nrunDPU: write_index : ", write_index)
+def main(argv):
+    global threadnum
 
-def app(image_dir,threads,model, compute_miou):
+    listimage = os.listdir(calib_image_dir)
+    threadnum = int(argv[1])
+    i = 0
+    global runTotall
+    runTotall = 128  # len(listimage)
+    cnt = 128
 
-    # load testing images
-    print("\nAPP- loading segmentation images and preprocessing test images")
-    test_images = os.listdir(image_dir)
-    test_images.sort()
-    #print("\nAPP- TEST IMAGES = ", test_images)
-    #print("\nAPP- LEN TEST IMAGES = ", len(test_images))
+    g = xir.Graph.deserialize(argv[2])
+    subgraphs_dpu = get_child_subgraph_dpu(g)
+    subgraphs_cpu = get_child_subgraph_cpu(g)
 
-    runTotal = len(test_images)
-    dir_test_seg = image_dir + "../seg_test"
-    test_segmentations  = os.listdir(dir_test_seg)
-    test_segmentations.sort()
-    #print("\nAPP- SEG IMAGES = ", test_segmentations)
-    #print("\nAPP- LEN SEGM IMAGES = ", len(test_segmentations))
+    if (Debug==True):
+        print("subgraphs_cpu: ", len(subgraphs_cpu))
+        print("subgraphs_dpu: ", len(subgraphs_dpu))
+        print("CPU subgraphs:")
+        for item in subgraphs_cpu:
+            print("CPU-node")
+            print(item.get_name())
+            print(item.get_input_tensors())
+            print(item.get_output_tensors())
+            for jtem in item.get_input_tensors():
+                print(tuple(jtem.dims))
+            for jtem in item.get_output_tensors():
+                print(tuple(jtem.dims))
 
-    X_test = []
-    Y_test = []
-    for im , seg in zip(test_images,test_segmentations) :
-        X_test.append(NormalizeImageArr(  os.path.join(image_dir, im)) )
-        Y_test.append(LoadSegmentationArr(os.path.join(dir_test_seg, seg), 12, 224, 224))
-    X_test = np.array(X_test)
-    Y_test = np.array(Y_test)
-    #print("\nAPP- testing    data (X) (Y) shapes", X_test.shape,Y_test.shape)
-    #print("\n")
+        print("DPU subgraphs:")
+        for item in subgraphs_dpu:
+            print("DPU-node")
+            print(item.get_name())
+            print(item.get_input_tensors())
+            print(item.get_output_tensors())
+            for jtem in item.get_input_tensors():
+                print(tuple(jtem.dims))
+            for jtem in item.get_output_tensors():
+                print(tuple(jtem.dims))
 
-    global out_q
-    out_q = np.zeros((runTotal,224,224,12),dtype=np.float32)
-    all_dpu_runners = []
-    #print("\nAPP- out_q: ", np.array(out_q).shape)
+    def get_name(x):
+        return x.name
 
-    g = xir.Graph.deserialize(model)
-    subgraphs = get_child_subgraph_dpu(g)
-    assert len(subgraphs) == 1  # only one DPU kernel
-    print('\nAPP- Found',len(subgraphs),'subgraphs in',model)
-    for i in range(threads):
-        all_dpu_runners.append(vart.Runner.create_runner(subgraphs[0], "run"))
+    # prepare a list of input tensors for DPU subgraphs
+    input_tensors_dpu = []
+    output_tensors_dpu = []
+    for item in subgraphs_dpu:
+        tmp = item.get_input_tensors()
+        tmp_list = sorted([i for i in tmp], key=get_name)
+        input_tensors_dpu.append(tmp_list)
 
-    '''run threads '''
-    print('\nAPP- Starting',threads,'threads...')
+        tmp = item.get_output_tensors()
+        tmp_list = sorted([i for i in tmp], key=get_name)
+        output_tensors_dpu.append(tmp_list)
+
+    global input_imgs_dpu
+    input_imgs_dpu = []
+    global output_imgs_dpu
+    output_imgs_dpu = []
+
+    # allocating input and output for DPU subgraphs
+    for item in input_tensors_dpu:
+        input_imgs_dpu.append([])
+        for jtem in item:
+            data_size = jtem.dims.copy()
+            data_size[0] = cnt
+            data_size = tuple(data_size)
+            input_imgs_dpu[-1].append(np.zeros(data_size, dtype=np.float32))
+
+    for item in output_tensors_dpu:
+        output_imgs_dpu.append([])
+        for jtem in item:
+            data_size = jtem.dims.copy()
+            data_size[0] = cnt
+            data_size = tuple(data_size)
+            output_imgs_dpu[-1].append(np.zeros(data_size, dtype=np.float32))
+
+    if (Debug==True):
+        for item in input_imgs_dpu:
+            for jtem in item:
+                print(jtem.shape)
+            print("\n")
+        for item in output_imgs_dpu:
+            for jtem in item:
+                print(jtem.shape)
+            print("\n")
+
+    time_start = time.time()
+    #######################################################
+    # CPU subgraph 0
+    #######################################################
+    width = input_imgs_dpu[0][0].shape[1]
+    height = input_imgs_dpu[0][0].shape[2]
+    """image list to be run """
+    for i in range(cnt):
+        path = os.path.join(calib_image_dir, listimage[i])
+        input_imgs_dpu[0][0][i] = preprocess_one_image_fn(path, width, height)
+
+    if (Verbose==True):
+        for idx in range(cnt):
+            cv2.imwrite('./rpt/image_'+str(idx)+'.jpg', input_imgs_dpu[0][0][idx])
+    #######################################################
+    # DPU subgraph 0
+    #######################################################
+    inps = [input_imgs_dpu[0][0]]
+
     threadAll = []
-    start=0
-    for i in range(threads):
-        if (i==threads-1):
-            end = len(X_test)
-        else:
-            end = start+(len(X_test)//threads)
-        in_q = X_test[start:end]
+    all_dpu_runners = []
+    subgraph_id = 0
+    for i in range(int(threadnum)):
+        all_dpu_runners.append(
+            vart.Runner.create_runner(subgraphs_dpu[subgraph_id], "run"))
 
-        t1 = threading.Thread(target=runDPU, args=(i,start,all_dpu_runners[i], in_q))
+    """run with batch """
+    for i in range(int(threadnum)):
+        t1 = threading.Thread(target=runUnetSubgraph, args=(
+            all_dpu_runners[i], inps, cnt, subgraph_id))
         threadAll.append(t1)
-        start=end
-
-    time1 = time.time()
     for x in threadAll:
         x.start()
     for x in threadAll:
         x.join()
-    time2 = time.time()
-    timetotal = time2 - time1
 
-    fps = float(runTotal / timetotal)
-    print("\nAPP- FPS=%.2f, total frames = %.0f , time=%.4f seconds\n" %(fps,runTotal, timetotal))
+    del all_dpu_runners
 
-    ''' put post-processing here if you have one '''
-    if (compute_miou==1):
-        y_pred1 = np.zeros((runTotal,224,224,12),dtype=np.float32)
-        #print("out_q.shape : ", out_q.shape)
-        for i in range( len(X_test) ):
-            #print("i= ", i)
-            tmp = np.reshape(out_q[i], 224*224*12)
-            y_pred = CPUCalcSoftmax(tmp, 224*224*12)
-            y_pred1[i] = np.reshape(y_pred, (224,224,12))
-        print("\n\nAPP- now computing IoU over testing data set:")
-        #np.save("dpu_out_q.npy", out_q)
-        y_pred1_i = np.argmax(y_pred1, axis=3)
-        #print(y_pred1_i.shape)
-        y_test1_i = np.argmax(Y_test, axis=3)
-        #print(y_test1_i.shape)
-        IoU(y_test1_i, y_pred1_i)
+    #######################################################
+    # CPU subgraph 1
+    #######################################################
+    input_imgs_dpu[1] = CPUZeroPad2d(output_imgs_dpu[0][0], cnt)
+    if (Debug==True):
+        for idx in range(64):
+            cv2.imwrite('./rpt/pred_1_'+str(idx)+'.jpg',
+                        scale_one_image(input_imgs_dpu[1][0][:, :, idx]))
+    #######################################################
+    # DPU subgraph 1
+    #######################################################
+    inps = [input_imgs_dpu[1]]
+
+    threadAll = []
+    subgraph_id = 1
+    all_dpu_runners = []
+    for i in range(int(threadnum)):
+        all_dpu_runners.append(
+            vart.Runner.create_runner(subgraphs_dpu[subgraph_id], "run"))
+
+    for i in range(int(threadnum)):
+        t1 = threading.Thread(target=runUnetSubgraph, args=(
+            all_dpu_runners[i], inps, cnt, subgraph_id))
+        threadAll.append(t1)
+    for x in threadAll:
+        x.start()
+    for x in threadAll:
+        x.join()
+
+    del all_dpu_runners
+
+    #######################################################
+    # CPU subgraph 2
+    #######################################################
+    input_imgs_dpu[2] = CPUZeroPad2d(output_imgs_dpu[1][2], cnt)
+    if (Debug==True):
+        for idx in range(256):
+            cv2.imwrite('./rpt/pred_2_'+str(idx)+'.jpg',
+                        scale_one_image(input_imgs_dpu[2][0][:, :, idx]))
+    #######################################################
+    # DPU subgraph 2
+    #######################################################
+    inps = [output_imgs_dpu[0][0], output_imgs_dpu[1][0],
+            output_imgs_dpu[1][1], output_imgs_dpu[1][2], input_imgs_dpu[2]]
+
+    threadAll = []
+    subgraph_id = 2
+    all_dpu_runners = []
+    for i in range(int(threadnum)):
+        all_dpu_runners.append(
+            vart.Runner.create_runner(subgraphs_dpu[subgraph_id], "run"))
+
+    for i in range(int(threadnum)):
+        t1 = threading.Thread(target=runUnetSubgraph, args=(
+            all_dpu_runners[i], inps, cnt, subgraph_id))
+        threadAll.append(t1)
+    for x in threadAll:
+        x.start()
+    for x in threadAll:
+        x.join()
+
+    del all_dpu_runners
+
+    if (Debug==True):
+        for idx in range(cnt):
+            cv2.imwrite('./rpt/pred_3_'+str(idx)+'.jpg',
+                        scale_one_image(output_imgs_dpu[2][0][idx][:, :, 0]))
+    #######################################################
+    # CPU subgraph 3
+    #######################################################
+    prediction = CPUCalcSigmoid(output_imgs_dpu[2][0], cnt)
+    if (Verbose==True):
+        for idx in range(cnt):
+            cv2.imwrite('./rpt/prediction_'+str(idx)+'.jpg',
+                        scale_one_image(prediction[idx][:, :, 0]))
+    #######################################################
+
+    time_end = time.time()
+    timetotal = time_end - time_start
+    total_frames = cnt * int(threadnum)
+    fps = float(total_frames / timetotal)
+    print(
+        "FPS=%.2f, total frames = %.2f , time=%.6f seconds"
+        % (fps, total_frames, timetotal)
+    )
 
 
-# only used if script is run as 'main' from command line
-def main():
-
-  # construct the argument parser and parse the arguments
-  ap = argparse.ArgumentParser()
-  ap.add_argument('-d', '--images',  type=str,            help='Path to folder of images.')
-  ap.add_argument('-t', '--threads', type=int, default=1, help='Number of threads. Default is 1')
-  ap.add_argument('-m', '--model',   type=str,            help='Path of xmodel')
-  ap.add_argument('-i', '--miou',    type=int, default=0, help='Compute Mean IoU: 1(YES)/0(NO). Default is 0')
-
-  args = ap.parse_args()
-
-  print ('Command line options:')
-  print (' --images  : ', args.images)
-  print (' --threads : ', args.threads)
-  print (' --model   : ', args.model)
-  print (' --miou    : ', args.miou)
-
-  app(args.images,args.threads,args.model, args.miou)
-
-if __name__ == '__main__':
-  main()
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print("usage : python3 script.py <thread_number> <xmodel_file>")
+    else:
+        main(sys.argv)

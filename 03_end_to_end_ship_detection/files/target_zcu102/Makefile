@@ -1,16 +1,25 @@
-all: build 
+all: build
 
 dataset:
 	tar -xvf ../test.tar.gz
-	mv build/dataset .
+	mv ./build/dataset/ .
+	rm -r build
 
-.PHONY: build
 build:
+	#cd code
 	bash -x code/build_app.sh
-	mv code/code ./run_cnn 
+	mv code/code ./run_cnn # change name of the application
 
 run:
-	./run_cnn ./unet/v3/model/unet3.xmodel ./dataset/test_data/ 1 | tee ./rpt/logfile_cpp_unet2.txt
+	#./run_cnn ./unet/v3/model/unet3.xmodel ./dataset/test_data/ 1 | tee ./log/logfile_cpp_unet3.txt
+	python3 ./code/src/app_mt.py 1 ./unet/v4/model/unet4.xmodel
+
+clean_data:
+	rm -rf dataset
+
+clean_output:
+	rm -rf ./rpt/*jpg
 
 clean:
-	./run_cnn 
+	rm -rf run_cnn
+
