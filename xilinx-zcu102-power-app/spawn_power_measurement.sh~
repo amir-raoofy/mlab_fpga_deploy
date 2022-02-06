@@ -1,0 +1,1 @@
+./powerapp.elf -l -n 7200 -t 1 -o /home/root/xilinx-zcu102-power-app/measurements.csv
