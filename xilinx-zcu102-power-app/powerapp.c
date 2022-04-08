@@ -109,7 +109,7 @@ void populate_ina_array(ina *inas) {
 			strcat(inas[counter].current_path,"/curr1_input");
 
 			strcpy(inas[counter].voltage_path,fname_buff);
-			strcat(inas[counter].voltage_path,"/in1_input");
+			strcat(inas[counter].voltage_path,"/in2_input");
 
 //			printf("found: %s\n", inas[counter].ina_dir);
 			inas[counter].last = 0;
